@@ -60,6 +60,19 @@ const description =
 
     <div class="workspace">
       <div class="editor-pane">
+        <nav class="editor-outline" aria-labelledby="editor-outline-title">
+          <div class="editor-outline-heading">
+            <span
+              id="editor-outline-title"
+              class="editor-outline-label"
+              data-i18n="outlineTitle">Markdown構成</span
+            >
+            <span id="editor-outline-count" class="editor-outline-count"
+              >0</span
+            >
+          </div>
+          <div id="editor-outline-list" class="editor-outline-list"></div>
+        </nav>
         <div class="panel-heading">
           <div>
             <div class="pane-label">
@@ -223,19 +236,6 @@ const description =
           </div>
         </dialog>
         <div class="editor-input-wrap" id="editor-input-wrap">
-          <nav class="editor-outline" aria-labelledby="editor-outline-title">
-            <div class="editor-outline-heading">
-              <span
-                id="editor-outline-title"
-                class="editor-outline-label"
-                data-i18n="outlineTitle">Markdown構成</span
-              >
-              <span id="editor-outline-count" class="editor-outline-count"
-                >0</span
-              >
-            </div>
-            <div id="editor-outline-list" class="editor-outline-list"></div>
-          </nav>
           <textarea
             id="markdown-input"
             spellcheck="false"
@@ -487,9 +487,6 @@ const description =
     const textarea = document.getElementById(
       "markdown-input",
     ) as HTMLTextAreaElement;
-    const editorInputWrap = document.getElementById(
-      "editor-input-wrap",
-    ) as HTMLElement;
     const editorOutlineList = document.getElementById(
       "editor-outline-list",
     ) as HTMLElement;
@@ -825,6 +822,36 @@ const description =
         .replaceAll("'", "&#039;");
     }
 
+    function measureEditorCaret(position: number) {
+      const style = getComputedStyle(textarea);
+      spacerMirror.style.width = `${textarea.clientWidth}px`;
+      spacerMirror.style.font = style.font;
+      spacerMirror.style.lineHeight = style.lineHeight;
+      spacerMirror.style.letterSpacing = style.letterSpacing;
+      spacerMirror.style.padding = style.padding;
+      spacerMirror.style.border = style.border;
+      spacerMirror.style.boxSizing = style.boxSizing;
+      spacerMirror.style.whiteSpace = "pre-wrap";
+      spacerMirror.style.overflowWrap = "break-word";
+      spacerMirror.style.wordBreak = style.wordBreak;
+      spacerMirror.innerHTML = `${escapeHtml(
+        textarea.value.slice(0, position),
+      ).replaceAll(
+        "\n",
+        "<br>",
+      )}<span class="editor-caret-marker">&#8203;</span>`;
+
+      const marker = spacerMirror.querySelector(
+        ".editor-caret-marker",
+      ) as HTMLElement;
+      const mirrorRect = spacerMirror.getBoundingClientRect();
+      const markerRect = marker.getBoundingClientRect();
+      const offset = markerRect.top - mirrorRect.top;
+      const lineHeight = px(style.lineHeight) || px(style.fontSize) * 1.75;
+      clearSpacerMirror();
+      return { offset, lineHeight };
+    }
+
     function updateEditorOutline() {
       const value = textarea.value;
       const lines = value.split(/\r?\n/);
@@ -896,14 +923,10 @@ const description =
           textarea.setSelectionRange(heading.start, heading.end);
           textarea.scrollTop = previousScrollTop;
           requestAnimationFrame(() => {
-            const style = getComputedStyle(textarea);
-            const lineHeight = px(style.lineHeight) || 16;
-            const paddingTop = px(style.paddingTop);
+            const caret = measureEditorCaret(heading.start);
             const targetScrollTop = Math.max(
               0,
-              paddingTop +
-                heading.line * lineHeight -
-                textarea.clientHeight * 0.08,
+              caret.offset - textarea.clientHeight * 0.08,
             );
             textarea.scrollTop = previousScrollTop;
             textarea.scrollTo({
@@ -966,37 +989,13 @@ const description =
 
       setSpacerTriggerMode(isSpacerLine);
 
-      const style = getComputedStyle(textarea);
-      spacerMirror.style.width = `${textarea.clientWidth}px`;
-      spacerMirror.style.font = style.font;
-      spacerMirror.style.lineHeight = style.lineHeight;
-      spacerMirror.style.letterSpacing = style.letterSpacing;
-      spacerMirror.style.padding = style.padding;
-      spacerMirror.style.border = style.border;
-      spacerMirror.style.boxSizing = style.boxSizing;
-      spacerMirror.style.whiteSpace = "pre-wrap";
-      spacerMirror.style.overflowWrap = "break-word";
-      spacerMirror.style.wordBreak = style.wordBreak;
-      spacerMirror.innerHTML = `${escapeHtml(
-        value.slice(0, position),
-      ).replaceAll(
-        "\n",
-        "<br>",
-      )}<span class="editor-caret-marker">&#8203;</span>`;
-
-      const marker = spacerMirror.querySelector(
-        ".editor-caret-marker",
-      ) as HTMLElement;
-      const mirrorRect = spacerMirror.getBoundingClientRect();
-      const markerRect = marker.getBoundingClientRect();
-      const lineHeight = px(style.lineHeight) || px(style.fontSize) * 1.75;
+      const caret = measureEditorCaret(position);
       const triggerHeight =
         px(getComputedStyle(spacerTrigger).height) || 1.75 * 16;
       const top =
-        markerRect.top -
-        mirrorRect.top -
+        caret.offset -
         textarea.scrollTop +
-        (lineHeight - triggerHeight) / 2;
+        (caret.lineHeight - triggerHeight) / 2;
 
       clearSpacerMirror();
       spacerTrigger.style.top = `${top}px`;
