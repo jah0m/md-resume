@@ -1427,10 +1427,11 @@
 #resume-preview p.resume-contact-row {
   margin: -4mm 0 5mm;
   color: var(--resume-muted);
-  font-size: 8pt;
-  line-height: 1.45;
+  font-size: 7.6pt;
+  line-height: 1.35;
   text-align: center;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
   break-inside: avoid;
   page-break-inside: avoid;
 }
