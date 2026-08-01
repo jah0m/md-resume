@@ -583,6 +583,26 @@ const description =
       );
     }
 
+    function decorateContactRow(identity: Element) {
+      const contactParagraph = identity.nextElementSibling;
+      const contactText = contactParagraph?.textContent?.trim() ?? "";
+      const looksLikeContact = /@|linkedin|github|email|メール|電話|携帯|phone|tel|website|ポートフォリオ/i.test(
+        contactText,
+      );
+      if (
+        !contactParagraph ||
+        contactParagraph.tagName !== "P" ||
+        !contactText ||
+        (!contactParagraph.querySelector("a") && !looksLikeContact)
+      )
+        return null;
+      contactParagraph.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
+        link.replaceWith(document.createTextNode(link.textContent ?? ""));
+      });
+      contactParagraph.classList.add("resume-contact-row");
+      return contactParagraph as HTMLElement;
+    }
+
     function decorateAvatar(source: HTMLElement) {
       const titleHeading = source.querySelector("h1");
       const metaParagraph = titleHeading?.nextElementSibling;
@@ -597,22 +617,13 @@ const description =
       const headingIdentity = isHeadingIdentity(metaParagraph);
       if (headingIdentity)
         metaParagraph.classList.add("resume-heading-identity");
-      if (!avatarDataUrl) return;
+      const contactRow = headingIdentity
+        ? decorateContactRow(metaParagraph)
+        : null;
+      if (!avatarDataUrl && !contactRow) return;
 
       const coverHeader = document.createElement("div");
       coverHeader.className = "resume-cover-header";
-      const metaRow = document.createElement("div");
-      metaRow.className = "resume-cover-meta";
-      const avatarFrame = document.createElement("div");
-      avatarFrame.className = "avatar-crop-frame resume-avatar-frame";
-      avatarFrame.dataset.shape = avatarShape;
-      avatarFrame.style.setProperty("--avatar-zoom", String(avatarZoom / 100));
-      avatarFrame.style.setProperty("--avatar-offset-x", `${avatarOffset.x}%`);
-      avatarFrame.style.setProperty("--avatar-offset-y", `${avatarOffset.y}%`);
-      const avatar = document.createElement("img");
-      avatar.className = "resume-avatar";
-      avatar.src = avatarDataUrl;
-      avatar.alt = "プロフィール写真";
 
       const lineBreak = metaParagraph.querySelector("br");
       if (!headingIdentity && lineBreak) {
@@ -630,9 +641,37 @@ const description =
       }
 
       parent.insertBefore(coverHeader, titleHeading);
-      coverHeader.append(titleHeading, metaRow);
-      avatarFrame.append(avatar);
-      metaRow.append(metaParagraph, avatarFrame);
+      coverHeader.append(titleHeading);
+      if (contactRow) coverHeader.append(contactRow);
+
+      if (avatarDataUrl) {
+        const metaRow = document.createElement("div");
+        metaRow.className = "resume-cover-meta";
+        const avatarFrame = document.createElement("div");
+        avatarFrame.className = "avatar-crop-frame resume-avatar-frame";
+        avatarFrame.dataset.shape = avatarShape;
+        avatarFrame.style.setProperty(
+          "--avatar-zoom",
+          String(avatarZoom / 100),
+        );
+        avatarFrame.style.setProperty(
+          "--avatar-offset-x",
+          `${avatarOffset.x}%`,
+        );
+        avatarFrame.style.setProperty(
+          "--avatar-offset-y",
+          `${avatarOffset.y}%`,
+        );
+        const avatar = document.createElement("img");
+        avatar.className = "resume-avatar";
+        avatar.src = avatarDataUrl;
+        avatar.alt = "プロフィール写真";
+        avatarFrame.append(avatar);
+        metaRow.append(metaParagraph, avatarFrame);
+        coverHeader.append(metaRow);
+      } else {
+        coverHeader.append(metaParagraph);
+      }
     }
 
     function paginate(source: HTMLElement, token: number) {

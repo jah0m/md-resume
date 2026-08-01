@@ -3,6 +3,8 @@
 **山田 太郎
 Taro Yamada**
 
+Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/your-name/) · [GitHub](https://github.com/your-name)
+
 ## 職務要約
 
 〇〇業界向けの業務システム開発において、要件整理、設計、実装、テスト、運用保守まで一貫して担当。複数の関係者と連携しながら、既存サービスの改善と新規機能の開発を推進してきた。

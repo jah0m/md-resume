@@ -1019,6 +1019,27 @@
   text-align: left;
 }
 
+#resume-preview p.resume-contact-row {
+  margin: -4mm 0 5mm;
+  color: var(--resume-muted);
+  font-size: 8pt;
+  line-height: 1.45;
+  text-align: center;
+  letter-spacing: 0.025em;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+#resume-preview p.resume-contact-row a {
+  color: var(--resume-heading);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#resume-preview p.resume-contact-row a:hover {
+  text-decoration: underline;
+}
+
 #resume-preview .resume-avatar-frame {
   width: 30mm;
   height: 30mm;

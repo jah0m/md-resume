@@ -15,6 +15,14 @@
 3. 必要に応じてテーマ、プロフィール写真、写真の表示形状を調整します。
 4. 「PDFとして保存」を押し、印刷ダイアログの出力先を「PDFに保存」にして保存します。
 
+## 連絡先を表示する
+
+名前の直後に、メールアドレスやプロフィールページを1行で記述すると、履歴書のタイトル下に連絡先として中央揃えで表示されます。Emailはテキストとして表示し、LinkedInやGitHubはMarkdownリンクとして設定できます。
+
+```md
+Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/your-name/) · [GitHub](https://github.com/your-name)
+```
+
 ## AIで原稿を整える
 
 すでに履歴書や職務経歴書の原稿がある場合は、AIにサンプルのMarkdownと自分の原稿を渡し、次のように依頼できます。
