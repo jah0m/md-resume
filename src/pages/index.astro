@@ -14,7 +14,7 @@ const description =
       <div class="header-row">
         <div class="app-title-wrap">
           <div class="brand-lockup">
-            <span class="brand-mark" aria-hidden="true">MD</span>
+            <img class="brand-mark" src="/favicon.svg" alt="" aria-hidden="true" />
             <div>
               <p class="eyebrow">PERSONAL RESUME STUDIO</p>
               <h1 data-i18n="brandTitle">型にはまらない、あなたの職務経歴書</h1>
@@ -282,10 +282,6 @@ const description =
             <div id="resume-pages"></div>
           </article>
         </div>
-        <p class="print-tip">
-          <strong data-i18n="printTipTitle">PDF保存のコツ</strong><span data-i18n="printTip"
-            >印刷設定で用紙を「A4」、倍率を「既定」、ヘッダーとフッターを「オフ」にすると最もきれいに仕上がります。</span>
-        </p>
       </div>
       <section class="usage-section">
         <h2 data-i18n="aboutTitle">このツールについて</h2>
@@ -308,6 +304,12 @@ const description =
             お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。
           </li>
         </ol>
+        <div class="usage-ai-prompt">
+          <strong data-i18n="aiPromptTitle">AIで職務経歴書を整える</strong>
+          <p data-i18n="aiPrompt">
+            このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。
+          </p>
+        </div>
         <div class="usage-contact-tip">
           <strong data-i18n="contactTitle">連絡先の書き方</strong>
           <p data-i18n-html="contactHelp">
@@ -319,11 +321,11 @@ const description =
           見出し（# ##
           ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。
         </p>
+        <footer class="site-footer">
+          <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
+        </footer>
       </section>
     </div>
-    <footer class="site-footer">
-              <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
-    </footer>
   </div>
 
   <script type="text/plain" id="sample-resume-data" set:html={sampleResume} />
@@ -349,6 +351,9 @@ const description =
       "markdown-input",
     ) as HTMLTextAreaElement;
     const preview = document.getElementById("resume-preview") as HTMLElement;
+    const previewScroll = document.querySelector(
+      ".preview-scroll",
+    ) as HTMLElement;
     const pages = document.getElementById("resume-pages") as HTMLElement;
     const pageCount = document.getElementById("page-count") as HTMLElement;
     const themeButtons = Array.from(
@@ -936,6 +941,8 @@ const description =
 
       const addPage = () => {
         const page = document.createElement("section");
+        const frame = document.createElement("div");
+        frame.className = "resume-page-frame";
         page.className = "resume-page";
         page.setAttribute(
           "aria-label",
@@ -944,7 +951,8 @@ const description =
             String(totalPages + 1),
           ),
         );
-        pages.appendChild(page);
+        frame.appendChild(page);
+        pages.appendChild(frame);
         currentPage = page;
         usedHeight = 0;
         totalPages += 1;
@@ -967,7 +975,9 @@ const description =
       if (!measuredBlocks.length) addPage();
 
       source.remove();
-      const firstPage = pages.firstElementChild as HTMLElement | null;
+      const firstPage = pages.querySelector(
+        ".resume-page-frame > .resume-page",
+      ) as HTMLElement | null;
       if (firstPage) {
         const date = formatCurrentDate();
         const dateElement = document.createElement("time");
@@ -978,6 +988,44 @@ const description =
       }
       currentPageTotal = totalPages || 1;
       pageCount.textContent = formatPageCount(currentPageTotal);
+      syncPreviewPageScale();
+    }
+
+    function syncPreviewPageScale() {
+      const firstPage = pages.querySelector(
+        ".resume-page-frame > .resume-page",
+      ) as HTMLElement | null;
+      if (!firstPage || !previewScroll) return;
+
+      const scrollStyle = getComputedStyle(previewScroll);
+      const availableWidth = Math.max(
+        0,
+        previewScroll.clientWidth -
+          px(scrollStyle.paddingLeft) -
+          px(scrollStyle.paddingRight),
+      );
+      const scale = window.matchMedia("(max-width: 1400px)").matches
+        ? Math.min(1, availableWidth / firstPage.offsetWidth)
+        : 1;
+
+      pages
+        .querySelectorAll<HTMLElement>(".resume-page-frame")
+        .forEach((frame) => {
+          const page = frame.firstElementChild as HTMLElement | null;
+          if (!page) return;
+
+          if (scale < 1) {
+            frame.style.width = `${page.offsetWidth * scale}px`;
+            frame.style.height = `${page.offsetHeight * scale}px`;
+            page.style.transform = `scale(${scale})`;
+            page.style.transformOrigin = "top left";
+          } else {
+            frame.style.removeProperty("width");
+            frame.style.removeProperty("height");
+            page.style.removeProperty("transform");
+            page.style.removeProperty("transform-origin");
+          }
+        });
     }
 
     function render() {
@@ -990,6 +1038,10 @@ const description =
 
       requestAnimationFrame(() => paginate(source, token));
     }
+
+    const previewResizeObserver = new ResizeObserver(syncPreviewPageScale);
+    previewResizeObserver.observe(previewScroll);
+    window.addEventListener("resize", syncPreviewPageScale);
 
     function persist() {
       localStorage.setItem(STORAGE_KEY, textarea.value);

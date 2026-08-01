@@ -59,9 +59,6 @@ export const messages = {
     backgroundMist: "クール・ミスト",
     backgroundLinen: "ソフト・リネン",
     savePdf: "PDFとして保存",
-    printTipTitle: "PDF保存のコツ",
-    printTip:
-      "印刷設定で用紙を「A4」、倍率を「既定」、ヘッダーとフッターを「オフ」にすると最もきれいに仕上がります。",
     aboutTitle: "このツールについて",
     aboutText:
       "日本の定番テンプレートでは表現しにくい、自分らしさとキャリアの個性を、Markdownから自分で組み立てられる職務経歴書に。入力した内容はデザイン性のあるA4レイアウトに整形され、サーバーに送信されることなくブラウザ内で処理されます。",
@@ -77,6 +74,9 @@ export const messages = {
     contactTitle: "連絡先の書き方",
     contactHelp:
       "名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。",
+    aiPromptTitle: "AIで職務経歴書を整える",
+    aiPrompt:
+      "このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。",
     syntaxTitle: "対応記法",
     syntaxText:
       "見出し（# ## ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。",
@@ -141,9 +141,6 @@ export const messages = {
     backgroundMist: "Cool mist",
     backgroundLinen: "Soft linen",
     savePdf: "Save as PDF",
-    printTipTitle: "PDF export tip",
-    printTip:
-      "For the cleanest result, set the paper size to A4, keep the scale at Default, and turn off headers and footers in the print settings.",
     aboutTitle: "About this tool",
     aboutText:
       "Standard resume templates can make it hard to express your personality and career story. This tool lets you build a distinctive resume from Markdown, format it as a polished A4 document, and process everything locally in your browser without sending your content to a server.",
@@ -159,6 +156,9 @@ export const messages = {
     contactTitle: "Contact information",
     contactHelp:
       "Write one line directly below your name to show it beneath the title. Keep <strong>Phone and Email</strong> as plain text; use Markdown links for <strong>LinkedIn, GitHub, Portfolio, personal websites, social media</strong>, and other profiles.",
+    aiPromptTitle: "Format your resume with AI",
+    aiPrompt:
+      "Using the headings and structure of this sample, organize my resume as Markdown. Do not change the content; use placeholders such as \"〇〇\" where information is missing.",
     syntaxTitle: "Supported syntax",
     syntaxText:
       "Supports standard Markdown syntax, including headings (# ## ###), lists, tables, and bold text.",
@@ -223,9 +223,6 @@ export const messages = {
     backgroundMist: "冷雾",
     backgroundLinen: "柔和亚麻",
     savePdf: "导出 PDF",
-    printTipTitle: "PDF 保存提示",
-    printTip:
-      "打印时将纸张设为 A4、缩放保持“默认”，并关闭页眉和页脚，导出的效果最佳。",
     aboutTitle: "关于本工具",
     aboutText:
       "日本常见的履历书模板往往难以展现个人风格和职业经历。这个工具让你从 Markdown 出发，自己排版一份简洁、有设计感的 A4 履历书。所有内容仅在浏览器中处理，不会上传到服务器。",
@@ -238,6 +235,9 @@ export const messages = {
     contactTitle: "联系方式",
     contactHelp:
       "在姓名后另起一行填写联系方式，内容会显示在标题下方。<strong>Phone 和 Email</strong>直接写文本；<strong>LinkedIn、GitHub、Portfolio、个人网站、社交媒体</strong>等使用 Markdown 链接。",
+    aiPromptTitle: "使用 AI 整理履历书",
+    aiPrompt:
+      "请按照这个示例的标题和结构，将我的履历书整理为 Markdown。不要修改内容；信息不足的地方请使用“〇〇”等占位符。",
     syntaxTitle: "支持的 Markdown 语法",
     syntaxText: "支持标题（# ## ###）、列表、表格、粗体等标准 Markdown 语法。",
     clearConfirm: "要清空编辑器中的全部内容吗？",
