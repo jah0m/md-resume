@@ -195,6 +195,51 @@ const description =
                   data-theme-option="slate"
                   aria-label="スレート・ブルー"
                   aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="forest"
+                  aria-label="フォレスト・グリーン"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="burgundy"
+                  aria-label="ワイン・バーガンディ"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="amber"
+                  aria-label="ウォーム・アンバー"
+                  aria-pressed="false"></button>
+              </div>
+            </div>
+            <div
+              class="background-picker"
+              role="group"
+              aria-label="履歴書の背景"
+            >
+              <span>背景</span>
+              <div class="theme-dots">
+                <button
+                  type="button"
+                  class="theme-dot background-dot"
+                  data-background-option="paper"
+                  aria-label="ピュア・ホワイト"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot background-dot"
+                  data-background-option="mist"
+                  aria-label="クール・ミスト"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot background-dot"
+                  data-background-option="linen"
+                  aria-label="ソフト・リネン"
+                  aria-pressed="false"></button>
               </div>
             </div>
             <button id="save-pdf" class="primary">PDFとして保存</button>
@@ -248,6 +293,7 @@ const description =
 
     const STORAGE_KEY = "md-resume-content-v2";
     const THEME_KEY = "md-resume-theme";
+    const BACKGROUND_KEY = "md-resume-background";
     const AVATAR_KEY = "md-resume-avatar";
     const AVATAR_DEFAULT_DISMISSED_KEY = "md-resume-avatar-default-dismissed";
 
@@ -259,6 +305,11 @@ const description =
     const pageCount = document.getElementById("page-count") as HTMLElement;
     const themeButtons = Array.from(
       document.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
+    );
+    const backgroundButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        "[data-background-option]",
+      ),
     );
     const avatarInput = document.getElementById(
       "avatar-input",
@@ -345,13 +396,34 @@ const description =
     let avatarDraftOffset = { ...avatarOffset };
 
     function applyTheme(theme: string) {
-      const validThemes = ["navy", "graphite", "slate"];
+      const validThemes = [
+        "navy",
+        "graphite",
+        "slate",
+        "forest",
+        "burgundy",
+        "amber",
+      ];
       const nextTheme = validThemes.includes(theme) ? theme : "navy";
       preview.dataset.theme = nextTheme;
       themeButtons.forEach((button) => {
         button.setAttribute(
           "aria-pressed",
           String(button.dataset.themeOption === nextTheme),
+        );
+      });
+    }
+
+    function applyBackground(background: string) {
+      const validBackgrounds = ["paper", "mist", "linen"];
+      const nextBackground = validBackgrounds.includes(background)
+        ? background
+        : "paper";
+      preview.dataset.background = nextBackground;
+      backgroundButtons.forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.backgroundOption === nextBackground),
         );
       });
     }
@@ -823,6 +895,7 @@ const description =
     const saved = localStorage.getItem(STORAGE_KEY);
     textarea.value = saved && saved.trim().length > 0 ? saved : sampleText;
     applyTheme(localStorage.getItem(THEME_KEY) ?? "navy");
+    applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
     updateAvatarControls();
     syncAvatarEditor();
     render();
@@ -832,6 +905,14 @@ const description =
         const nextTheme = button.dataset.themeOption ?? "navy";
         applyTheme(nextTheme);
         localStorage.setItem(THEME_KEY, nextTheme);
+      });
+    });
+
+    backgroundButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextBackground = button.dataset.backgroundOption ?? "paper";
+        applyBackground(nextBackground);
+        localStorage.setItem(BACKGROUND_KEY, nextBackground);
       });
     });
 
