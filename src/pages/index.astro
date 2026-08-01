@@ -1,0 +1,923 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../styles/resume.css";
+import sampleResume from "../data/sample-resume.md?raw";
+
+const title = "Markdown職務経歴書 PDF変換ツール｜無料・ブラウザで完結";
+const description =
+  "日本の定番テンプレートでは物足りない人へ。Markdownで書いた職務経歴書を、デザイン性のあるA4レイアウトに整えてPDF保存できます。入力内容はブラウザ内だけで処理します。";
+---
+
+<Layout title={title} description={description}>
+  <div class="app">
+    <header class="app-header">
+      <div class="header-row">
+        <div class="app-title-wrap">
+          <div class="brand-lockup">
+            <span class="brand-mark" aria-hidden="true">MD</span>
+            <div>
+              <p class="eyebrow">PERSONAL RESUME STUDIO</p>
+              <h1>型にはまらない、あなたの職務経歴書</h1>
+            </div>
+          </div>
+          <p class="lede">Markdownで書いて、自分のキャリアを自分で設計する。</p>
+        </div>
+        <div class="header-meta">
+          <span class="privacy-note">データはブラウザ内だけで処理</span>
+          <span class="header-detail">A4 / Markdown → PDF</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <div class="editor-pane">
+        <div class="panel-heading">
+          <div>
+            <div class="pane-label">原稿エディター <span>自動保存</span></div>
+            <p class="panel-title">Markdownで内容を整える</p>
+          </div>
+          <span class="panel-index">01</span>
+        </div>
+        <div class="editor-toolbar">
+          <div class="action-group">
+            <button id="load-sample">サンプル</button>
+            <button id="download-sample">サンプルを保存</button>
+            <label for="file-input">.mdを開く</label>
+            <input
+              id="file-input"
+              type="file"
+              accept=".md,text/markdown,text/plain"
+            />
+          </div>
+          <div class="action-group action-group-secondary">
+            <button id="save-md">.md保存</button>
+            <button id="clear-editor">クリア</button>
+          </div>
+        </div>
+        <div class="avatar-control">
+          <div class="avatar-control-copy">
+            <span class="avatar-control-label">プロフィール写真</span>
+            <span id="avatar-status">未設定</span>
+          </div>
+          <div class="avatar-control-actions">
+            <label for="avatar-input">画像をアップロード</label>
+            <button id="edit-avatar" type="button" disabled>写真を編集</button>
+            <button id="clear-avatar" type="button" disabled>取り除く</button>
+            <input id="avatar-input" type="file" accept="image/*" />
+          </div>
+        </div>
+        <dialog
+          id="avatar-editor"
+          class="avatar-editor"
+          aria-labelledby="avatar-editor-title"
+        >
+          <div class="avatar-editor-heading">
+            <div>
+              <span class="avatar-editor-kicker">PROFILE PHOTO</span>
+              <h3 id="avatar-editor-title">写真を整える</h3>
+            </div>
+            <button
+              id="close-avatar-editor"
+              class="avatar-editor-close"
+              type="button"
+              aria-label="写真編集を閉じる">閉じる</button
+            >
+          </div>
+          <div class="avatar-editor-body">
+            <div
+              class="avatar-editor-stage"
+              id="avatar-editor-stage"
+              tabindex="0"
+              role="application"
+              aria-label="写真をドラッグして位置を調整。ホイールで拡大縮小"
+            >
+              <img
+                id="avatar-editor-source-image"
+                class="avatar-editor-source-image"
+                alt=""
+                aria-hidden="true"
+              />
+              <div
+                class="avatar-crop-frame avatar-editor-crop-window"
+                id="avatar-editor-crop-window"
+                data-shape="square"
+              >
+                <img
+                  id="avatar-editor-image"
+                  alt="プロフィール写真の編集プレビュー"
+                />
+              </div>
+            </div>
+            <div class="avatar-editor-settings">
+              <label class="avatar-zoom-control" for="avatar-zoom">
+                <span
+                  >拡大率 <output id="avatar-zoom-value" for="avatar-zoom"
+                    >100%</output
+                  ></span
+                >
+                <input
+                  id="avatar-zoom"
+                  type="range"
+                  min="100"
+                  max="240"
+                  step="1"
+                  value="100"
+                />
+              </label>
+              <fieldset class="avatar-shape-control">
+                <legend>表示形状</legend>
+                <div class="avatar-shape-options">
+                  <label>
+                    <input
+                      type="radio"
+                      name="avatar-shape"
+                      value="square"
+                      checked
+                    />
+                    <span>方形</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="avatar-shape" value="circle" />
+                    <span>円形</span>
+                  </label>
+                </div>
+              </fieldset>
+              <p class="avatar-editor-note">
+                ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。
+              </p>
+            </div>
+          </div>
+          <div class="avatar-editor-actions">
+            <button
+              id="cancel-avatar-editor"
+              class="avatar-editor-secondary"
+              type="button">キャンセル</button
+            >
+            <button
+              id="save-avatar-editor"
+              class="avatar-editor-primary"
+              type="button">保存</button
+            >
+          </div>
+        </dialog>
+        <textarea
+          id="markdown-input"
+          spellcheck="false"
+          aria-label="Markdown入力"></textarea>
+      </div>
+      <div class="preview-pane">
+        <div class="panel-heading">
+          <div>
+            <div class="pane-label">
+              プレビュー <span id="page-count">A4 / Professional</span>
+            </div>
+            <p class="panel-title">職務経歴書の仕上がり</p>
+          </div>
+          <div class="preview-actions">
+            <div class="theme-picker" role="group" aria-label="履歴書テーマ">
+              <span>テーマ</span>
+              <div class="theme-dots">
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="navy"
+                  aria-label="クラシック・ネイビー"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="graphite"
+                  aria-label="ミニマル・グラファイト"
+                  aria-pressed="false"></button>
+                <button
+                  type="button"
+                  class="theme-dot"
+                  data-theme-option="slate"
+                  aria-label="スレート・ブルー"
+                  aria-pressed="false"></button>
+              </div>
+            </div>
+            <button id="save-pdf" class="primary">PDFとして保存</button>
+          </div>
+        </div>
+        <div class="preview-scroll">
+          <article id="resume-preview" aria-label="職務経歴書プレビュー">
+            <div id="resume-pages"></div>
+          </article>
+        </div>
+        <p class="print-tip">
+          <strong>PDF保存のコツ</strong><span
+            >印刷設定で用紙を「A4」、倍率を「既定」、ヘッダーとフッターを「オフ」にすると最もきれいに仕上がります。</span>
+        </p>
+      </div>
+      <section class="usage-section">
+        <h2>このツールについて</h2>
+        <p>
+          日本の定番テンプレートでは表現しにくい、自分らしさとキャリアの個性を、Markdownから自分で組み立てられる職務経歴書に。
+          入力した内容はデザイン性のあるA4レイアウトに整形され、サーバーに送信されることなくブラウザ内で処理されます。
+        </p>
+        <h2>使い方</h2>
+        <ol>
+          <li>
+            「サンプルを読み込む」でMarkdownの書き方を確認するか、お手持ちの.mdファイルを開きます。
+          </li>
+          <li>
+            左側のエディタで内容を編集すると、右側のプレビューにリアルタイムで反映されます。
+          </li>
+          <li>
+            「PDFとして保存」を押すと印刷ダイアログが開きます。出力先を「PDFに保存」にして保存すれば完了です。
+          </li>
+          <li>
+            お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。
+          </li>
+        </ol>
+        <h2>対応記法</h2>
+        <p>
+          見出し（# ##
+          ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。
+        </p>
+      </section>
+    </div>
+    <footer class="site-footer">© Jahom</footer>
+  </div>
+
+  <script type="text/plain" id="sample-resume-data" set:html={sampleResume} />
+
+  <script>
+    import { renderMarkdown } from "../lib/markdown";
+
+    const STORAGE_KEY = "md-resume-content-v2";
+    const THEME_KEY = "md-resume-theme";
+    const AVATAR_KEY = "md-resume-avatar";
+    const AVATAR_DEFAULT_DISMISSED_KEY = "md-resume-avatar-default-dismissed";
+
+    const textarea = document.getElementById(
+      "markdown-input",
+    ) as HTMLTextAreaElement;
+    const preview = document.getElementById("resume-preview") as HTMLElement;
+    const pages = document.getElementById("resume-pages") as HTMLElement;
+    const pageCount = document.getElementById("page-count") as HTMLElement;
+    const themeButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
+    );
+    const avatarInput = document.getElementById(
+      "avatar-input",
+    ) as HTMLInputElement;
+    const avatarStatus = document.getElementById(
+      "avatar-status",
+    ) as HTMLElement;
+    const editAvatarButton = document.getElementById(
+      "edit-avatar",
+    ) as HTMLButtonElement;
+    const clearAvatarButton = document.getElementById(
+      "clear-avatar",
+    ) as HTMLButtonElement;
+    const avatarEditor = document.getElementById(
+      "avatar-editor",
+    ) as HTMLDialogElement;
+    const avatarEditorStage = document.getElementById(
+      "avatar-editor-stage",
+    ) as HTMLElement;
+    const avatarEditorCropWindow = document.getElementById(
+      "avatar-editor-crop-window",
+    ) as HTMLElement;
+    const avatarEditorSourceImage = document.getElementById(
+      "avatar-editor-source-image",
+    ) as HTMLImageElement;
+    const avatarEditorImage = document.getElementById(
+      "avatar-editor-image",
+    ) as HTMLImageElement;
+    const avatarZoomInput = document.getElementById(
+      "avatar-zoom",
+    ) as HTMLInputElement;
+    const avatarZoomValue = document.getElementById(
+      "avatar-zoom-value",
+    ) as HTMLOutputElement;
+    const avatarShapeInputs = Array.from(
+      document.querySelectorAll<HTMLInputElement>('input[name="avatar-shape"]'),
+    );
+    const closeAvatarEditorButton = document.getElementById(
+      "close-avatar-editor",
+    ) as HTMLButtonElement;
+    const cancelAvatarEditorButton = document.getElementById(
+      "cancel-avatar-editor",
+    ) as HTMLButtonElement;
+    const saveAvatarEditorButton = document.getElementById(
+      "save-avatar-editor",
+    ) as HTMLButtonElement;
+    const sampleData = document.getElementById(
+      "sample-resume-data",
+    ) as HTMLScriptElement;
+    const sampleText = sampleData.textContent ?? "";
+    const storedAvatar = localStorage.getItem(AVATAR_KEY);
+    let avatarDataUrl =
+      storedAvatar ??
+      (localStorage.getItem(AVATAR_DEFAULT_DISMISSED_KEY) === "true"
+        ? ""
+        : "/demo-avatar.png");
+    const AVATAR_SETTINGS_KEY = "md-resume-avatar-settings";
+    const savedAvatarSettings = (() => {
+      try {
+        const parsed = JSON.parse(
+          localStorage.getItem(AVATAR_SETTINGS_KEY) ?? "{}",
+        );
+        return {
+          zoom: Number.isFinite(Number(parsed.zoom))
+            ? Number(parsed.zoom)
+            : 100,
+          shape: parsed.shape === "circle" ? "circle" : "square",
+          x: Number.isFinite(Number(parsed.x)) ? Number(parsed.x) : 0,
+          y: Number.isFinite(Number(parsed.y)) ? Number(parsed.y) : 0,
+        };
+      } catch {
+        return { zoom: 100, shape: "square", x: 0, y: 0 };
+      }
+    })();
+    let avatarZoom = Math.min(240, Math.max(100, savedAvatarSettings.zoom));
+    let avatarShape: "square" | "circle" = savedAvatarSettings.shape;
+    let avatarOffset = {
+      x: Math.min(100, Math.max(-100, savedAvatarSettings.x)),
+      y: Math.min(100, Math.max(-100, savedAvatarSettings.y)),
+    };
+    let avatarDraftDataUrl = avatarDataUrl;
+    let avatarDraftZoom = avatarZoom;
+    let avatarDraftShape: "square" | "circle" = avatarShape;
+    let avatarDraftOffset = { ...avatarOffset };
+
+    function applyTheme(theme: string) {
+      const validThemes = ["navy", "graphite", "slate"];
+      const nextTheme = validThemes.includes(theme) ? theme : "navy";
+      preview.dataset.theme = nextTheme;
+      themeButtons.forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.themeOption === nextTheme),
+        );
+      });
+    }
+
+    let renderToken = 0;
+
+    function px(value: string) {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function formatCurrentDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function updateAvatarControls(message?: string) {
+      avatarStatus.textContent =
+        message ?? (avatarDataUrl ? "設定済み" : "未設定");
+      editAvatarButton.disabled = !avatarDataUrl;
+      clearAvatarButton.disabled = !avatarDataUrl;
+    }
+
+    function persistAvatarSettings() {
+      localStorage.setItem(
+        AVATAR_SETTINGS_KEY,
+        JSON.stringify({
+          zoom: avatarZoom,
+          shape: avatarShape,
+          x: avatarOffset.x,
+          y: avatarOffset.y,
+        }),
+      );
+    }
+
+    function syncAvatarEditor() {
+      avatarEditorCropWindow.dataset.shape = avatarDraftShape;
+      avatarEditorCropWindow.style.setProperty(
+        "--avatar-zoom",
+        String(avatarDraftZoom / 100),
+      );
+      avatarEditorCropWindow.style.setProperty(
+        "--avatar-offset-x",
+        `${avatarDraftOffset.x}%`,
+      );
+      avatarEditorCropWindow.style.setProperty(
+        "--avatar-offset-y",
+        `${avatarDraftOffset.y}%`,
+      );
+      avatarEditorSourceImage.style.setProperty(
+        "--avatar-zoom",
+        String(avatarDraftZoom / 100),
+      );
+      avatarEditorSourceImage.style.setProperty(
+        "--avatar-offset-x",
+        `${avatarDraftOffset.x}%`,
+      );
+      avatarEditorSourceImage.style.setProperty(
+        "--avatar-offset-y",
+        `${avatarDraftOffset.y}%`,
+      );
+      avatarZoomInput.value = String(avatarDraftZoom);
+      avatarZoomValue.value = `${avatarDraftZoom}%`;
+      avatarShapeInputs.forEach((input) => {
+        input.checked = input.value === avatarDraftShape;
+      });
+    }
+
+    function setAvatarEditorOpen(
+      isOpen: boolean,
+      draftDataUrl = avatarDataUrl,
+    ) {
+      const shouldOpen = isOpen && Boolean(draftDataUrl);
+      if (shouldOpen) {
+        avatarDraftDataUrl = draftDataUrl;
+        avatarDraftZoom = avatarZoom;
+        avatarDraftShape = avatarShape;
+        avatarDraftOffset = { ...avatarOffset };
+        avatarEditorSourceImage.src = avatarDraftDataUrl;
+        avatarEditorImage.src = avatarDraftDataUrl;
+        if (!avatarEditor.open) avatarEditor.showModal();
+        syncAvatarEditor();
+      } else {
+        if (avatarEditor.open) avatarEditor.close();
+        avatarEditorSourceImage.removeAttribute("src");
+        avatarEditorImage.removeAttribute("src");
+        updateAvatarControls();
+      }
+    }
+
+    function saveAvatarEditor() {
+      if (!avatarDraftDataUrl) return;
+      avatarDataUrl = avatarDraftDataUrl;
+      avatarZoom = avatarDraftZoom;
+      avatarShape = avatarDraftShape;
+      avatarOffset = { ...avatarDraftOffset };
+      localStorage.setItem(AVATAR_KEY, avatarDataUrl);
+      localStorage.removeItem(AVATAR_DEFAULT_DISMISSED_KEY);
+      persistAvatarSettings();
+      setAvatarEditorOpen(false);
+      updateAvatarControls();
+      render();
+    }
+
+    function clampAvatarOffset(value: number) {
+      return Math.min(100, Math.max(-100, value));
+    }
+
+    let avatarDragPointerId: number | null = null;
+    let avatarDragStart = { x: 0, y: 0 };
+    let avatarDragOrigin = { x: 0, y: 0 };
+
+    function finishAvatarDrag(pointerId: number) {
+      if (avatarDragPointerId !== pointerId) return;
+      avatarDragPointerId = null;
+      avatarEditorStage.classList.remove("is-dragging");
+      if (avatarEditorStage.hasPointerCapture(pointerId)) {
+        avatarEditorStage.releasePointerCapture(pointerId);
+      }
+    }
+
+    avatarEditorStage.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      avatarDragPointerId = event.pointerId;
+      avatarDragStart = { x: event.clientX, y: event.clientY };
+      avatarDragOrigin = { ...avatarDraftOffset };
+      avatarEditorStage.setPointerCapture(event.pointerId);
+      avatarEditorStage.classList.add("is-dragging");
+      event.preventDefault();
+    });
+
+    avatarEditorStage.addEventListener("pointermove", (event) => {
+      if (avatarDragPointerId !== event.pointerId) return;
+      const bounds = avatarEditorStage.getBoundingClientRect();
+      avatarDraftOffset = {
+        x: clampAvatarOffset(
+          avatarDragOrigin.x +
+            ((event.clientX - avatarDragStart.x) / bounds.width) * 100,
+        ),
+        y: clampAvatarOffset(
+          avatarDragOrigin.y +
+            ((event.clientY - avatarDragStart.y) / bounds.height) * 100,
+        ),
+      };
+      syncAvatarEditor();
+      event.preventDefault();
+    });
+
+    avatarEditorStage.addEventListener("pointerup", (event) => {
+      finishAvatarDrag(event.pointerId);
+    });
+
+    avatarEditorStage.addEventListener("pointercancel", (event) => {
+      finishAvatarDrag(event.pointerId);
+    });
+
+    avatarEditorStage.addEventListener(
+      "wheel",
+      (event) => {
+        const nextZoom = avatarDraftZoom + (event.deltaY < 0 ? 5 : -5);
+        avatarDraftZoom = Math.min(240, Math.max(100, nextZoom));
+        syncAvatarEditor();
+        event.preventDefault();
+      },
+      { passive: false },
+    );
+
+    async function optimizeAvatar(file: File) {
+      const sourceUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result ?? ""));
+        reader.onerror = () => reject(new Error("画像を読み込めませんでした"));
+        reader.readAsDataURL(file);
+      });
+
+      return new Promise<string>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => {
+          // Keep normal photos untouched. Only very large images are reduced,
+          // and the editor itself handles the visual crop inside the avatar frame.
+          const maxEdge = 1600;
+          const longestEdge = Math.max(image.naturalWidth, image.naturalHeight);
+          if (longestEdge <= maxEdge) {
+            resolve(sourceUrl);
+            return;
+          }
+
+          const scale = maxEdge / longestEdge;
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext("2d");
+          if (!context) {
+            reject(new Error("画像を処理できませんでした"));
+            return;
+          }
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = "high";
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          const outputType =
+            file.type === "image/png" ? "image/png" : "image/jpeg";
+          resolve(
+            outputType === "image/png"
+              ? canvas.toDataURL(outputType)
+              : canvas.toDataURL(outputType, 0.96),
+          );
+        };
+        image.onerror = () => reject(new Error("画像を読み込めませんでした"));
+        image.src = sourceUrl;
+      });
+    }
+
+    function isHeadingIdentity(paragraph: Element) {
+      const significantNodes = Array.from(paragraph.childNodes).filter(
+        (node) => node.nodeType !== 3 || Boolean(node.textContent?.trim()),
+      );
+      return (
+        significantNodes.length > 0 &&
+        significantNodes.every(
+          (node) =>
+            node.nodeType === 1 &&
+            (node.nodeName === "STRONG" || node.nodeName === "BR"),
+        )
+      );
+    }
+
+    function decorateAvatar(source: HTMLElement) {
+      const titleHeading = source.querySelector("h1");
+      const metaParagraph = titleHeading?.nextElementSibling;
+      const parent = titleHeading?.parentElement;
+      if (
+        !titleHeading ||
+        !metaParagraph ||
+        metaParagraph.tagName !== "P" ||
+        !parent
+      )
+        return;
+      const headingIdentity = isHeadingIdentity(metaParagraph);
+      if (headingIdentity)
+        metaParagraph.classList.add("resume-heading-identity");
+      if (!avatarDataUrl) return;
+
+      const coverHeader = document.createElement("div");
+      coverHeader.className = "resume-cover-header";
+      const metaRow = document.createElement("div");
+      metaRow.className = "resume-cover-meta";
+      const avatarFrame = document.createElement("div");
+      avatarFrame.className = "avatar-crop-frame resume-avatar-frame";
+      avatarFrame.dataset.shape = avatarShape;
+      avatarFrame.style.setProperty("--avatar-zoom", String(avatarZoom / 100));
+      avatarFrame.style.setProperty("--avatar-offset-x", `${avatarOffset.x}%`);
+      avatarFrame.style.setProperty("--avatar-offset-y", `${avatarOffset.y}%`);
+      const avatar = document.createElement("img");
+      avatar.className = "resume-avatar";
+      avatar.src = avatarDataUrl;
+      avatar.alt = "プロフィール写真";
+
+      const lineBreak = metaParagraph.querySelector("br");
+      if (!headingIdentity && lineBreak) {
+        const name = document.createElement("span");
+        name.className = "resume-name";
+        let node = lineBreak.nextSibling;
+        while (node) {
+          const nextNode = node.nextSibling;
+          name.append(node);
+          node = nextNode;
+        }
+        metaParagraph.append(name);
+      } else if (!headingIdentity) {
+        metaParagraph.classList.add("resume-name-only");
+      }
+
+      parent.insertBefore(coverHeader, titleHeading);
+      coverHeader.append(titleHeading, metaRow);
+      avatarFrame.append(avatar);
+      metaRow.append(metaParagraph, avatarFrame);
+    }
+
+    function paginate(source: HTMLElement, token: number) {
+      if (token !== renderToken) return;
+
+      const computed = getComputedStyle(source);
+      const contentHeight =
+        source.clientHeight -
+        px(computed.paddingTop) -
+        px(computed.paddingBottom);
+      const measuredChildren = Array.from(source.children).map((node) => {
+        const child = node as HTMLElement;
+        const childStyle = getComputedStyle(child);
+        return {
+          child,
+          height:
+            child.getBoundingClientRect().height +
+            px(childStyle.marginTop) +
+            px(childStyle.marginBottom),
+        };
+      });
+
+      // Keep headings with the beginning of their section. Major H2 sections
+      // also keep the first H3 and its metadata together, so a section title
+      // never lands alone at the bottom of a page.
+      const measuredBlocks: Array<{
+        entries: typeof measuredChildren;
+        height: number;
+      }> = [];
+
+      for (let index = 0; index < measuredChildren.length; index += 1) {
+        const current = measuredChildren[index];
+        const isHeading = /^H[1-5]$/.test(current.child.tagName);
+        const headingLevel = isHeading
+          ? Number(current.child.tagName.slice(1))
+          : 0;
+        const entries = [current];
+        let height = current.height;
+
+        const appendNext = () => {
+          const next = measuredChildren[index + 1];
+          if (!next) return false;
+          entries.push(next);
+          height += next.height;
+          index += 1;
+          return true;
+        };
+
+        if (
+          headingLevel === 2 &&
+          measuredChildren[index + 1]?.child.tagName === "H3"
+        ) {
+          appendNext();
+          if (
+            measuredChildren[index + 1] &&
+            !/^H[1-5]$/.test(measuredChildren[index + 1].child.tagName)
+          ) {
+            appendNext();
+          }
+        } else if (isHeading) {
+          const keepFollowing = headingLevel === 2 ? 3 : 1;
+          while (
+            entries.length <= keepFollowing &&
+            measuredChildren[index + 1] &&
+            !/^H[1-5]$/.test(measuredChildren[index + 1].child.tagName)
+          ) {
+            appendNext();
+          }
+        }
+
+        measuredBlocks.push({ entries, height });
+      }
+
+      pages.replaceChildren();
+
+      let currentPage: HTMLElement | undefined;
+      let usedHeight = 0;
+      let totalPages = 0;
+
+      const addPage = () => {
+        const page = document.createElement("section");
+        page.className = "resume-page";
+        page.setAttribute("aria-label", `職務経歴書 ${totalPages + 1}ページ目`);
+        pages.appendChild(page);
+        currentPage = page;
+        usedHeight = 0;
+        totalPages += 1;
+      };
+
+      for (const block of measuredBlocks) {
+        if (
+          !currentPage ||
+          (usedHeight > 0 && usedHeight + block.height > contentHeight)
+        ) {
+          addPage();
+        }
+
+        for (const entry of block.entries) {
+          currentPage?.appendChild(entry.child);
+        }
+        usedHeight += block.height;
+      }
+
+      if (!measuredBlocks.length) addPage();
+
+      source.remove();
+      const firstPage = pages.firstElementChild as HTMLElement | null;
+      if (firstPage) {
+        const date = formatCurrentDate();
+        const dateElement = document.createElement("time");
+        dateElement.className = "resume-date";
+        dateElement.dateTime = date;
+        dateElement.textContent = date;
+        firstPage.appendChild(dateElement);
+      }
+      pageCount.textContent = `A4 / ${totalPages || 1}ページ`;
+    }
+
+    function render() {
+      const token = ++renderToken;
+      const source = document.createElement("div");
+      source.className = "resume-page resume-page-measure";
+      source.innerHTML = renderMarkdown(textarea.value);
+      decorateAvatar(source);
+      pages.replaceChildren(source);
+
+      requestAnimationFrame(() => paginate(source, token));
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, textarea.value);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+      }
+    });
+
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    textarea.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        render();
+        persist();
+      }, 150);
+    });
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+    textarea.value = saved && saved.trim().length > 0 ? saved : sampleText;
+    applyTheme(localStorage.getItem(THEME_KEY) ?? "navy");
+    updateAvatarControls();
+    syncAvatarEditor();
+    render();
+
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextTheme = button.dataset.themeOption ?? "navy";
+        applyTheme(nextTheme);
+        localStorage.setItem(THEME_KEY, nextTheme);
+      });
+    });
+
+    document.getElementById("load-sample")?.addEventListener("click", () => {
+      textarea.value = sampleText;
+      render();
+      persist();
+    });
+
+    document.getElementById("clear-editor")?.addEventListener("click", () => {
+      if (!confirm("編集内容をすべて消去しますか？")) return;
+      textarea.value = "";
+      render();
+      persist();
+    });
+
+    document.getElementById("save-pdf")?.addEventListener("click", () => {
+      window.print();
+    });
+
+    document.getElementById("save-md")?.addEventListener("click", () => {
+      const blob = new Blob([textarea.value], {
+        type: "text/markdown;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "resume.md";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document
+      .getElementById("download-sample")
+      ?.addEventListener("click", () => {
+        const blob = new Blob([sampleText], {
+          type: "text/markdown;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sample-resume.md";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        textarea.value = String(reader.result ?? "");
+        render();
+        persist();
+      };
+      reader.readAsText(file);
+      fileInput.value = "";
+    });
+
+    avatarInput.addEventListener("change", async () => {
+      const file = avatarInput.files?.[0];
+      avatarInput.value = "";
+      if (!file) return;
+      try {
+        const nextAvatar = await optimizeAvatar(file);
+        setAvatarEditorOpen(true, nextAvatar);
+        updateAvatarControls("保存待ち");
+      } catch {
+        updateAvatarControls("アップロード失敗");
+      }
+    });
+
+    clearAvatarButton.addEventListener("click", () => {
+      localStorage.removeItem(AVATAR_KEY);
+      localStorage.setItem(AVATAR_DEFAULT_DISMISSED_KEY, "true");
+      avatarDataUrl = "";
+      setAvatarEditorOpen(false);
+      updateAvatarControls();
+      render();
+    });
+
+    editAvatarButton.addEventListener("click", () => {
+      setAvatarEditorOpen(true);
+    });
+
+    closeAvatarEditorButton.addEventListener("click", () => {
+      setAvatarEditorOpen(false);
+    });
+
+    cancelAvatarEditorButton.addEventListener("click", () => {
+      setAvatarEditorOpen(false);
+    });
+
+    saveAvatarEditorButton.addEventListener("click", () => {
+      saveAvatarEditor();
+    });
+
+    avatarEditor.addEventListener("click", (event) => {
+      if (event.target === avatarEditor) setAvatarEditorOpen(false);
+    });
+
+    avatarEditor.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      setAvatarEditorOpen(false);
+    });
+
+    avatarZoomInput.addEventListener("input", () => {
+      avatarDraftZoom = Math.min(
+        240,
+        Math.max(100, Number(avatarZoomInput.value)),
+      );
+      syncAvatarEditor();
+    });
+
+    avatarShapeInputs.forEach((input) => {
+      input.addEventListener("change", () => {
+        if (
+          input.checked &&
+          (input.value === "square" || input.value === "circle")
+        ) {
+          avatarDraftShape = input.value;
+          syncAvatarEditor();
+        }
+      });
+    });
+  </script>
+</Layout>
