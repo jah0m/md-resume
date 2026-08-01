@@ -11,6 +11,47 @@ export const md = new MarkdownIt({
   typographer: true,
 });
 
+// CommonMark's delimiter rules can leave strong markers untouched when a
+// Japanese word immediately follows the closing `**`. Keep the familiar
+// Markdown syntax working for Japanese resume prose without changing how
+// regular emphasis or code spans are parsed.
+md.inline.ruler.before(
+  "emphasis",
+  "japanese_strong",
+  (state: any, silent: boolean) => {
+    const start = state.pos;
+    if (
+      state.src.charCodeAt(start) !== 0x2a ||
+      state.src.charCodeAt(start + 1) !== 0x2a
+    )
+      return false;
+
+    const end = state.src.indexOf("**", start + 2);
+    if (end < 0 || end === start + 2) return false;
+
+    const content = state.src.slice(start + 2, end);
+    if (!/[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]/.test(content))
+      return false;
+    if (silent) return true;
+
+    const previousPosition = state.pos;
+    const previousMax = state.posMax;
+    const open = state.push("strong_open", "strong", 1);
+    open.markup = "**";
+
+    state.pos = start + 2;
+    state.posMax = end;
+    state.md.inline.tokenize(state);
+
+    state.pos = previousPosition;
+    state.posMax = previousMax;
+    const close = state.push("strong_close", "strong", -1);
+    close.markup = "**";
+    state.pos = end + 2;
+    return true;
+  },
+);
+
 export function renderMarkdown(source: string): string {
   return md.render(source);
 }

@@ -1271,8 +1271,9 @@
 }
 
 #resume-preview strong {
-  color: var(--resume-subheading);
-  font-weight: 750;
+  color: var(--resume-heading);
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 #resume-preview ul,
