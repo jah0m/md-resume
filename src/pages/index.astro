@@ -489,6 +489,8 @@ const description =
       });
       pageCount.textContent = formatPageCount(currentPageTotal);
       updateAvatarControls();
+      document.documentElement.classList.remove("i18n-pending");
+      document.documentElement.style.removeProperty("visibility");
     }
 
     function applyTheme(theme: string) {
@@ -1042,6 +1044,7 @@ const description =
     });
 
     document.getElementById("load-sample")?.addEventListener("click", () => {
+      if (!confirm(message("loadSampleConfirm"))) return;
       textarea.value = sampleText;
       render();
       persist();

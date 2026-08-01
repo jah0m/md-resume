@@ -43,6 +43,34 @@ const jsonLd = {
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:locale" content="ja_JP" />
 
+    <script is:inline>
+      (() => {
+        const supportedLocales = ["ja", "en", "zh"];
+        let storedLocale = "";
+        try {
+          storedLocale = localStorage.getItem("md-resume-locale") ?? "";
+        } catch {
+          storedLocale = "";
+        }
+        const browserLanguage = navigator.language.toLowerCase();
+        const initialLocale = supportedLocales.includes(storedLocale)
+          ? storedLocale
+          : browserLanguage.startsWith("zh")
+            ? "zh"
+            : browserLanguage.startsWith("en")
+              ? "en"
+              : "ja";
+        document.documentElement.dataset.locale = initialLocale;
+        document.documentElement.classList.add("i18n-pending");
+        document.documentElement.style.visibility = "hidden";
+      })();
+    </script>
+    <style is:inline>
+      html.i18n-pending {
+        visibility: hidden;
+      }
+    </style>
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -69,5 +97,9 @@ const jsonLd = {
     font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', system-ui, sans-serif;
     background: #f3f4f6;
     color: #1f2937;
+  }
+
+  html.i18n-pending .app {
+    visibility: hidden;
   }
 </style>
