@@ -81,6 +81,10 @@ export const messages = {
     syntaxTitle: "対応記法",
     syntaxText:
       "見出し（# ## ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。",
+    spacerHelp:
+      "余白を追加するには、単独行に <!-- spacer --> と記述します。本文約1行分の間隔が追加されます。",
+    insertSpacer: "余白を追加",
+    removeSpacer: "余白を削除",
     clearConfirm: "編集内容をすべて消去しますか？",
     pageAriaLabel: "職務経歴書 {count}ページ目",
     pageCount: "A4 / {count}ページ",
@@ -164,6 +168,10 @@ export const messages = {
     syntaxTitle: "Supported syntax",
     syntaxText:
       "Supports standard Markdown syntax, including headings (# ## ###), lists, tables, and bold text.",
+    spacerHelp:
+      "To add extra space, write <!-- spacer --> on its own line. It adds roughly one line of body-text height.",
+    insertSpacer: "Add spacing",
+    removeSpacer: "Remove spacing",
     clearConfirm: "Clear all content in the editor?",
     pageAriaLabel: "Resume page {count}",
     pageCount: "A4 / {count} pages",
@@ -243,6 +251,10 @@ export const messages = {
     promptCopied: "已复制",
     syntaxTitle: "支持的 Markdown 语法",
     syntaxText: "支持标题（# ## ###）、列表、表格、粗体等标准 Markdown 语法。",
+    spacerHelp:
+      "如需增加间距，请单独写一行 <!-- spacer -->。它会增加大约一行正文的高度。",
+    insertSpacer: "增加间距",
+    removeSpacer: "删除间距",
     clearConfirm: "要清空编辑器中的全部内容吗？",
     pageAriaLabel: "履历书第 {count} 页",
     pageCount: "A4 / {count} 页",

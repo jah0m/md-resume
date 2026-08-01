@@ -176,11 +176,23 @@ const description =
             >
           </div>
         </dialog>
-        <textarea
-          id="markdown-input"
-          spellcheck="false"
-          aria-label="Markdown入力"
-          data-i18n-aria-label="editorInput"></textarea>
+        <div class="editor-input-wrap" id="editor-input-wrap">
+          <textarea
+            id="markdown-input"
+            spellcheck="false"
+            aria-label="Markdown入力"
+            data-i18n-aria-label="editorInput"></textarea>
+          <button
+            id="insert-spacer"
+            class="editor-spacer-trigger"
+            type="button"
+            hidden
+            aria-label="余白を追加"
+            data-i18n-aria-label="insertSpacer"
+            title="余白を追加"
+            data-i18n-title="insertSpacer"
+          >+</button>
+        </div>
       </div>
       <div class="preview-pane">
         <div class="panel-heading">
@@ -324,6 +336,9 @@ const description =
           見出し（# ##
           ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。
         </p>
+        <p class="usage-syntax-note" data-i18n="spacerHelp">
+          余白を追加するには、単独行に <code>&lt;!-- spacer --&gt;</code> と記述します。本文約1行分の間隔が追加されます。
+        </p>
         <footer class="site-footer">
           <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
         </footer>
@@ -353,6 +368,12 @@ const description =
     const textarea = document.getElementById(
       "markdown-input",
     ) as HTMLTextAreaElement;
+    const editorInputWrap = document.getElementById(
+      "editor-input-wrap",
+    ) as HTMLElement;
+    const spacerTrigger = document.getElementById(
+      "insert-spacer",
+    ) as HTMLButtonElement;
     const preview = document.getElementById("resume-preview") as HTMLElement;
     const previewScroll = document.querySelector(
       ".preview-scroll",
@@ -483,6 +504,14 @@ const description =
           );
         });
       document
+        .querySelectorAll<HTMLElement>("[data-i18n-title]")
+        .forEach((element) => {
+          element.setAttribute(
+            "title",
+            message(element.dataset.i18nTitle ?? ""),
+          );
+        });
+      document
         .querySelectorAll<HTMLImageElement>("[data-i18n-alt]")
         .forEach((element) => {
           element.alt = message(element.dataset.i18nAlt ?? "");
@@ -556,6 +585,171 @@ const description =
     function formatPageCount(count: number) {
       return message("pageCount").replace("{count}", String(count));
     }
+
+    const spacerMirror = document.createElement("div");
+    spacerMirror.className = "editor-caret-mirror";
+    const spacerMirrorMarker = document.createElement("span");
+    spacerMirrorMarker.className = "editor-caret-marker";
+    spacerMirror.appendChild(spacerMirrorMarker);
+    editorInputWrap.appendChild(spacerMirror);
+
+    function setSpacerTriggerVisible(visible: boolean) {
+      spacerTrigger.hidden = !visible;
+      spacerTrigger.classList.toggle("editor-spacer-trigger-visible", visible);
+    }
+
+    function setSpacerTriggerMode(removing: boolean) {
+      spacerTrigger.dataset.mode = removing ? "remove" : "insert";
+      spacerTrigger.textContent = removing ? "−" : "+";
+      spacerTrigger.classList.toggle("editor-spacer-remove", removing);
+      const labelKey = removing ? "removeSpacer" : "insertSpacer";
+      const label = message(labelKey);
+      spacerTrigger.setAttribute("aria-label", label);
+      spacerTrigger.setAttribute("title", label);
+    }
+
+    function escapeHtml(value: string) {
+      return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function updateSpacerTrigger() {
+      if (document.activeElement !== textarea) {
+        setSpacerTriggerMode(false);
+        setSpacerTriggerVisible(false);
+        return;
+      }
+
+      const value = textarea.value;
+      const position = textarea.selectionStart;
+      const lineStart = value.lastIndexOf("\n", position - 1) + 1;
+      const nextLineBreak = value.indexOf("\n", position);
+      const lineEnd = nextLineBreak === -1 ? value.length : nextLineBreak;
+      const currentLine = value.slice(lineStart, lineEnd);
+      const isSpacerLine = currentLine.trim() === "<!-- spacer -->";
+
+      if (currentLine.trim() !== "" && !isSpacerLine) {
+        setSpacerTriggerMode(false);
+        setSpacerTriggerVisible(false);
+        return;
+      }
+
+      setSpacerTriggerMode(isSpacerLine);
+
+      const style = getComputedStyle(textarea);
+      spacerMirror.style.width = `${textarea.clientWidth}px`;
+      spacerMirror.style.font = style.font;
+      spacerMirror.style.lineHeight = style.lineHeight;
+      spacerMirror.style.letterSpacing = style.letterSpacing;
+      spacerMirror.style.padding = style.padding;
+      spacerMirror.style.border = style.border;
+      spacerMirror.style.boxSizing = style.boxSizing;
+      spacerMirror.style.whiteSpace = "pre-wrap";
+      spacerMirror.style.overflowWrap = "break-word";
+      spacerMirror.style.wordBreak = style.wordBreak;
+      spacerMirror.innerHTML = `${escapeHtml(value.slice(0, position)).replaceAll(
+        "\n",
+        "<br>",
+      )}<span class="editor-caret-marker">&#8203;</span>`;
+
+      const marker = spacerMirror.querySelector(
+        ".editor-caret-marker",
+      ) as HTMLElement;
+      const mirrorRect = spacerMirror.getBoundingClientRect();
+      const markerRect = marker.getBoundingClientRect();
+      const lineHeight = px(style.lineHeight) || px(style.fontSize) * 1.75;
+      const triggerHeight =
+        px(getComputedStyle(spacerTrigger).height) || 1.75 * 16;
+      const top =
+        markerRect.top -
+        mirrorRect.top -
+        textarea.scrollTop +
+        (lineHeight - triggerHeight) / 2;
+
+      spacerTrigger.style.top = `${top}px`;
+      setSpacerTriggerVisible(
+        top + triggerHeight >= 0 && top <= textarea.clientHeight,
+      );
+    }
+
+    function replaceEditorRange(
+      start: number,
+      end: number,
+      replacement: string,
+    ) {
+      textarea.focus();
+      textarea.setSelectionRange(start, end);
+
+      // Native insertText creates a browser undo transaction. The fallback is
+      // kept for browsers that do not expose execCommand for textareas.
+      const inserted = document.execCommand(
+        "insertText",
+        false,
+        replacement,
+      );
+      if (!inserted) {
+        textarea.setRangeText(replacement, start, end, "end");
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+
+    function insertSpacer() {
+      const value = textarea.value;
+      const position = textarea.selectionStart;
+      const lineStart = value.lastIndexOf("\n", position - 1) + 1;
+      const nextLineBreak = value.indexOf("\n", position);
+      const lineEnd = nextLineBreak === -1 ? value.length : nextLineBreak;
+      const currentLine = value.slice(lineStart, lineEnd);
+
+      if (currentLine.trim() !== "") return;
+
+      const insertedSpacer = "\n<!-- spacer -->\n";
+      replaceEditorRange(lineStart, lineEnd, insertedSpacer);
+      updateSpacerTrigger();
+    }
+
+    function removeSpacer() {
+      const value = textarea.value;
+      const position = textarea.selectionStart;
+      const lineStart = value.lastIndexOf("\n", position - 1) + 1;
+      const nextLineBreak = value.indexOf("\n", position);
+      const lineEnd = nextLineBreak === -1 ? value.length : nextLineBreak;
+      const currentLine = value.slice(lineStart, lineEnd);
+
+      if (currentLine.trim() !== "<!-- spacer -->") return;
+
+      const hasBlankBefore = value.slice(0, lineStart).endsWith("\n\n");
+      const hasBlankAfter = value.slice(lineEnd).startsWith("\n\n");
+      const removeStart = hasBlankBefore ? lineStart - 1 : lineStart;
+      const removeEnd = hasBlankAfter ? lineEnd + 1 : lineEnd;
+
+      replaceEditorRange(removeStart, removeEnd, "");
+      updateSpacerTrigger();
+    }
+
+    spacerTrigger.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+    });
+    spacerTrigger.addEventListener("click", () => {
+      if (spacerTrigger.dataset.mode === "remove") {
+        removeSpacer();
+      } else {
+        insertSpacer();
+      }
+    });
+    textarea.addEventListener("select", updateSpacerTrigger);
+    textarea.addEventListener("keyup", updateSpacerTrigger);
+    textarea.addEventListener("click", updateSpacerTrigger);
+    textarea.addEventListener("focus", updateSpacerTrigger);
+    textarea.addEventListener("blur", updateSpacerTrigger);
+    textarea.addEventListener("scroll", updateSpacerTrigger);
+    document.addEventListener("selectionchange", updateSpacerTrigger);
+    window.addEventListener("resize", updateSpacerTrigger);
+    new ResizeObserver(updateSpacerTrigger).observe(textarea);
 
     function updateAvatarControls(statusKey?: "avatarPending" | "avatarUploadFailed") {
       avatarStatus.textContent =
