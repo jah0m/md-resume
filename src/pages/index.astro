@@ -14,17 +14,28 @@ const description =
       <div class="header-row">
         <div class="app-title-wrap">
           <div class="brand-lockup">
-            <img class="brand-mark" src="/favicon.svg" alt="" aria-hidden="true" />
+            <img
+              class="brand-mark"
+              src="/favicon.svg"
+              alt=""
+              aria-hidden="true"
+            />
             <div>
               <p class="eyebrow">PERSONAL RESUME STUDIO</p>
               <h1 data-i18n="brandTitle">型にはまらない、あなたの職務経歴書</h1>
             </div>
           </div>
-          <p class="lede" data-i18n="lede">Markdownで書いて、自分のキャリアを自分で設計する。</p>
+          <p class="lede" data-i18n="lede">
+            Markdownで書いて、自分のキャリアを自分で設計する。
+          </p>
         </div>
         <div class="header-meta">
-          <span class="privacy-note" data-i18n="privacyNote">データはブラウザ内だけで処理</span>
-          <span class="header-detail" data-i18n="headerDetail">A4 / Markdown → PDF</span>
+          <span class="privacy-note" data-i18n="privacyNote"
+            >データはブラウザ内だけで処理</span
+          >
+          <span class="header-detail" data-i18n="headerDetail"
+            >A4 / Markdown → PDF</span
+          >
           <div
             class="language-picker"
             role="group"
@@ -32,9 +43,15 @@ const description =
             data-i18n-aria-label="languageLabel"
           >
             <div class="language-options">
-              <button type="button" data-locale-option="ja" aria-pressed="true">日</button>
-              <button type="button" data-locale-option="en" aria-pressed="false">EN</button>
-              <button type="button" data-locale-option="zh" aria-pressed="false">中</button>
+              <button type="button" data-locale-option="ja" aria-pressed="true"
+                >日</button
+              >
+              <button type="button" data-locale-option="en" aria-pressed="false"
+                >EN</button
+              >
+              <button type="button" data-locale-option="zh" aria-pressed="false"
+                >中</button
+              >
             </div>
           </div>
         </div>
@@ -45,15 +62,22 @@ const description =
       <div class="editor-pane">
         <div class="panel-heading">
           <div>
-            <div class="pane-label"><span data-i18n="editorPaneLabel">原稿エディター</span> <span data-i18n="autosave">自動保存</span></div>
-            <p class="panel-title" data-i18n="editorTitle">Markdownで内容を整える</p>
+            <div class="pane-label">
+              <span data-i18n="editorPaneLabel">原稿エディター</span>
+              <span data-i18n="autosave">自動保存</span>
+            </div>
+            <p class="panel-title" data-i18n="editorTitle">
+              Markdownで内容を整える
+            </p>
           </div>
           <span class="panel-index">01</span>
         </div>
         <div class="editor-toolbar">
           <div class="action-group">
             <button id="load-sample" data-i18n="loadSample">サンプル</button>
-            <button id="download-sample" data-i18n="downloadSample">サンプルを保存</button>
+            <button id="download-sample" data-i18n="downloadSample"
+              >サンプルを保存</button
+            >
             <label for="file-input" data-i18n="openMd">.mdを開く</label>
             <input
               id="file-input"
@@ -68,13 +92,27 @@ const description =
         </div>
         <div class="avatar-control">
           <div class="avatar-control-copy">
-            <span class="avatar-control-label" data-i18n="profilePhoto">プロフィール写真</span>
+            <span class="avatar-control-label" data-i18n="profilePhoto"
+              >プロフィール写真</span
+            >
             <span id="avatar-status">未設定</span>
           </div>
           <div class="avatar-control-actions">
-            <label for="avatar-input" data-i18n="uploadImage">画像をアップロード</label>
-            <button id="edit-avatar" type="button" disabled data-i18n="editPhoto">写真を編集</button>
-            <button id="clear-avatar" type="button" disabled data-i18n="removePhoto">取り除く</button>
+            <label for="avatar-input" data-i18n="uploadImage"
+              >画像をアップロード</label
+            >
+            <button
+              id="edit-avatar"
+              type="button"
+              disabled
+              data-i18n="editPhoto">写真を編集</button
+            >
+            <button
+              id="clear-avatar"
+              type="button"
+              disabled
+              data-i18n="removePhoto">取り除く</button
+            >
             <input id="avatar-input" type="file" accept="image/*" />
           </div>
         </div>
@@ -85,8 +123,12 @@ const description =
         >
           <div class="avatar-editor-heading">
             <div>
-              <span class="avatar-editor-kicker" data-i18n="photoKicker">PROFILE PHOTO</span>
-              <h3 id="avatar-editor-title" data-i18n="editPhotoTitle">写真を整える</h3>
+              <span class="avatar-editor-kicker" data-i18n="photoKicker"
+                >PROFILE PHOTO</span
+              >
+              <h3 id="avatar-editor-title" data-i18n="editPhotoTitle">
+                写真を整える
+              </h3>
             </div>
             <button
               id="close-avatar-editor"
@@ -127,8 +169,8 @@ const description =
             <div class="avatar-editor-settings">
               <label class="avatar-zoom-control" for="avatar-zoom">
                 <span
-                  ><span data-i18n="zoom">拡大率</span> <output id="avatar-zoom-value" for="avatar-zoom"
-                    >100%</output
+                  ><span data-i18n="zoom">拡大率</span>
+                  <output id="avatar-zoom-value" for="avatar-zoom">100%</output
                   ></span
                 >
                 <input
@@ -159,7 +201,9 @@ const description =
                 </div>
               </fieldset>
               <p class="avatar-editor-note">
-                <span data-i18n="photoEditorNote">ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。</span>
+                <span data-i18n="photoEditorNote"
+                  >ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。</span
+                >
               </p>
             </div>
           </div>
@@ -167,16 +211,31 @@ const description =
             <button
               id="cancel-avatar-editor"
               class="avatar-editor-secondary"
-              type="button" data-i18n="cancel">キャンセル</button
+              type="button"
+              data-i18n="cancel">キャンセル</button
             >
             <button
               id="save-avatar-editor"
               class="avatar-editor-primary"
-              type="button" data-i18n="save">保存</button
+              type="button"
+              data-i18n="save">保存</button
             >
           </div>
         </dialog>
         <div class="editor-input-wrap" id="editor-input-wrap">
+          <nav class="editor-outline" aria-labelledby="editor-outline-title">
+            <div class="editor-outline-heading">
+              <span
+                id="editor-outline-title"
+                class="editor-outline-label"
+                data-i18n="outlineTitle">Markdown構成</span
+              >
+              <span id="editor-outline-count" class="editor-outline-count"
+                >0</span
+              >
+            </div>
+            <div id="editor-outline-list" class="editor-outline-list"></div>
+          </nav>
           <textarea
             id="markdown-input"
             spellcheck="false"
@@ -190,8 +249,8 @@ const description =
             aria-label="余白を追加"
             data-i18n-aria-label="insertSpacer"
             title="余白を追加"
-            data-i18n-title="insertSpacer"
-          >+</button>
+            data-i18n-title="insertSpacer">+</button
+          >
         </div>
       </div>
       <div class="preview-pane">
@@ -201,10 +260,17 @@ const description =
               <span data-i18n="previewLabel">プレビュー</span>
               <span id="page-count">A4 / Professional</span>
             </div>
-            <p class="panel-title" data-i18n="previewTitle">職務経歴書の仕上がり</p>
+            <p class="panel-title" data-i18n="previewTitle">
+              職務経歴書の仕上がり
+            </p>
           </div>
           <div class="preview-actions">
-            <div class="theme-picker" role="group" aria-label="履歴書テーマ" data-i18n-aria-label="theme">
+            <div
+              class="theme-picker"
+              role="group"
+              aria-label="履歴書テーマ"
+              data-i18n-aria-label="theme"
+            >
               <span data-i18n="theme">テーマ</span>
               <div class="theme-dots">
                 <button
@@ -290,19 +356,39 @@ const description =
                     <span data-i18n="topMargin">上</span>
                     <output id="page-margin-top-value">15 mm</output>
                   </span>
-                    <input id="page-margin-top" type="range" min="0" max="24" step="1" value="15" />
+                  <input
+                    id="page-margin-top"
+                    type="range"
+                    min="0"
+                    max="24"
+                    step="1"
+                    value="15"
+                  />
                 </label>
                 <label class="page-margin-control" for="page-margin-bottom">
                   <span>
                     <span data-i18n="bottomMargin">下</span>
                     <output id="page-margin-bottom-value">15 mm</output>
                   </span>
-                    <input id="page-margin-bottom" type="range" min="0" max="24" step="1" value="15" />
+                  <input
+                    id="page-margin-bottom"
+                    type="range"
+                    min="0"
+                    max="24"
+                    step="1"
+                    value="15"
+                  />
                 </label>
-                <button id="reset-page-margins" type="button" data-i18n="resetMargins">初期値に戻す</button>
+                <button
+                  id="reset-page-margins"
+                  type="button"
+                  data-i18n="resetMargins">初期値に戻す</button
+                >
               </div>
             </details>
-            <button id="save-pdf" class="primary" data-i18n="savePdf">PDFとして保存</button>
+            <button id="save-pdf" class="primary" data-i18n="savePdf"
+              >PDFとして保存</button
+            >
           </div>
         </div>
         <div class="preview-scroll">
@@ -340,12 +426,18 @@ const description =
           <p id="ai-prompt-text" data-i18n="aiPrompt">
             このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。
           </p>
-          <button id="copy-ai-prompt" type="button" data-i18n="copyPrompt">Promptをコピー</button>
+          <button id="copy-ai-prompt" type="button" data-i18n="copyPrompt"
+            >Promptをコピー</button
+          >
         </div>
         <div class="usage-contact-tip">
           <strong data-i18n="contactTitle">連絡先の書き方</strong>
           <p data-i18n-html="contactHelp">
-            名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。
+            名前の直後に1行で記述すると、タイトル下に表示されます。<strong
+              >PhoneとEmail</strong
+            >はテキスト、<strong
+              >LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong
+            >などはMarkdownリンクにします。
           </p>
         </div>
         <h2 data-i18n="syntaxTitle">対応記法</h2>
@@ -361,7 +453,9 @@ const description =
           <code class="usage-spacer-code">&lt;!-- spacer --&gt;</code>
         </div>
         <footer class="site-footer">
-          <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
+          <a href="https://github.com/jah0m" target="_blank" rel="noreferrer"
+            >© Jahom</a
+          >
         </footer>
       </section>
     </div>
@@ -395,6 +489,12 @@ const description =
     ) as HTMLTextAreaElement;
     const editorInputWrap = document.getElementById(
       "editor-input-wrap",
+    ) as HTMLElement;
+    const editorOutlineList = document.getElementById(
+      "editor-outline-list",
+    ) as HTMLElement;
+    const editorOutlineCount = document.getElementById(
+      "editor-outline-count",
     ) as HTMLElement;
     const spacerTrigger = document.getElementById(
       "insert-spacer",
@@ -430,9 +530,7 @@ const description =
       document.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
     );
     const backgroundButtons = Array.from(
-      document.querySelectorAll<HTMLButtonElement>(
-        "[data-background-option]",
-      ),
+      document.querySelectorAll<HTMLButtonElement>("[data-background-option]"),
     );
     const localeButtons = Array.from(
       document.querySelectorAll<HTMLButtonElement>("[data-locale-option]"),
@@ -549,15 +647,20 @@ const description =
     function applyLocale(locale: string) {
       const nextLocale: Locale = isLocale(locale) ? locale : "ja";
       currentLocale = nextLocale;
-      document.documentElement.lang = nextLocale === "zh" ? "zh-CN" : nextLocale;
+      document.documentElement.lang =
+        nextLocale === "zh" ? "zh-CN" : nextLocale;
       document.documentElement.dataset.locale = nextLocale;
 
-      document.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
-        element.textContent = message(element.dataset.i18n ?? "");
-      });
-      document.querySelectorAll<HTMLElement>("[data-i18n-html]").forEach((element) => {
-        element.innerHTML = message(element.dataset.i18nHtml ?? "");
-      });
+      document
+        .querySelectorAll<HTMLElement>("[data-i18n]")
+        .forEach((element) => {
+          element.textContent = message(element.dataset.i18n ?? "");
+        });
+      document
+        .querySelectorAll<HTMLElement>("[data-i18n-html]")
+        .forEach((element) => {
+          element.innerHTML = message(element.dataset.i18nHtml ?? "");
+        });
       document
         .querySelectorAll<HTMLElement>("[data-i18n-aria-label]")
         .forEach((element) => {
@@ -593,6 +696,7 @@ const description =
       pageCount.textContent = formatPageCount(currentPageTotal);
       updatePageMarginLabels();
       updateAvatarControls();
+      updateEditorOutline();
       document.documentElement.classList.remove("i18n-pending");
       document.documentElement.style.removeProperty("visibility");
     }
@@ -674,10 +778,7 @@ const description =
     ) {
       pageMarginTop = clampPageMargin(top);
       pageMarginBottom = clampPageMargin(bottom);
-      preview.style.setProperty(
-        "--resume-padding-top",
-        `${pageMarginTop}mm`,
-      );
+      preview.style.setProperty("--resume-padding-top", `${pageMarginTop}mm`);
       preview.style.setProperty(
         "--resume-padding-bottom",
         `${pageMarginBottom}mm`,
@@ -694,10 +795,11 @@ const description =
 
     const spacerMirror = document.createElement("div");
     spacerMirror.className = "editor-caret-mirror";
-    const spacerMirrorMarker = document.createElement("span");
-    spacerMirrorMarker.className = "editor-caret-marker";
-    spacerMirror.appendChild(spacerMirrorMarker);
-    editorInputWrap.appendChild(spacerMirror);
+    document.body.appendChild(spacerMirror);
+
+    function clearSpacerMirror() {
+      spacerMirror.replaceChildren();
+    }
 
     function setSpacerTriggerVisible(visible: boolean) {
       spacerTrigger.hidden = !visible;
@@ -723,8 +825,125 @@ const description =
         .replaceAll("'", "&#039;");
     }
 
+    function updateEditorOutline() {
+      const value = textarea.value;
+      const lines = value.split(/\r?\n/);
+      const headings: Array<{
+        level: number;
+        title: string;
+        index: number;
+        line: number;
+        start: number;
+        end: number;
+      }> = [];
+      let offset = 0;
+      let inFence = false;
+
+      lines.forEach((line, lineIndex) => {
+        const trimmed = line.trim();
+        if (/^(```|~~~)/.test(trimmed)) {
+          inFence = !inFence;
+        } else if (!inFence) {
+          const match = line.match(/^\s*(#{1,5})[ \t]+(.+?)\s*$/);
+          if (match) {
+            const title = match[2].replace(/\s+#+\s*$/, "").trim();
+            if (title) {
+              headings.push({
+                level: match[1].length,
+                title,
+                index: headings.length,
+                line: lineIndex,
+                start: offset,
+                end: offset + line.length,
+              });
+            }
+          }
+        }
+
+        if (lineIndex < lines.length - 1) {
+          offset +=
+            line.length + (value[offset + line.length] === "\r" ? 2 : 1);
+        }
+      });
+
+      editorOutlineCount.textContent = String(headings.length);
+      editorOutlineList.replaceChildren();
+
+      if (headings.length === 0) {
+        const empty = document.createElement("span");
+        empty.className = "editor-outline-empty";
+        empty.textContent = message("outlineEmpty");
+        editorOutlineList.append(empty);
+        return;
+      }
+
+      headings.forEach((heading) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "editor-outline-item";
+        item.style.setProperty(
+          "--outline-indent",
+          `${0.35 + (heading.level - 1) * 0.7}rem`,
+        );
+        item.textContent = heading.title;
+        item.title = heading.title;
+        item.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+        });
+        item.addEventListener("click", () => {
+          const previousScrollTop = textarea.scrollTop;
+          textarea.focus({ preventScroll: true });
+          textarea.setSelectionRange(heading.start, heading.end);
+          textarea.scrollTop = previousScrollTop;
+          requestAnimationFrame(() => {
+            const style = getComputedStyle(textarea);
+            const lineHeight = px(style.lineHeight) || 16;
+            const paddingTop = px(style.paddingTop);
+            const targetScrollTop = Math.max(
+              0,
+              paddingTop +
+                heading.line * lineHeight -
+                textarea.clientHeight * 0.08,
+            );
+            textarea.scrollTop = previousScrollTop;
+            textarea.scrollTo({
+              top: targetScrollTop,
+              behavior: "smooth",
+            });
+            scrollPreviewToHeading(heading.index);
+            updateSpacerTrigger();
+          });
+        });
+        editorOutlineList.append(item);
+      });
+    }
+
+    function scrollPreviewToHeading(index: number) {
+      const target = pages.querySelector<HTMLElement>(
+        `[data-outline-index="${index}"]`,
+      );
+      if (!target) return;
+
+      const previewIsScrollable =
+        previewScroll.scrollHeight > previewScroll.clientHeight + 1;
+      if (!previewIsScrollable) return;
+
+      const previewRect = previewScroll.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const targetTop =
+        previewScroll.scrollTop +
+        targetRect.top -
+        previewRect.top -
+        previewScroll.clientHeight * 0.08;
+      previewScroll.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: "smooth",
+      });
+    }
+
     function updateSpacerTrigger() {
       if (document.activeElement !== textarea) {
+        clearSpacerMirror();
         setSpacerTriggerMode(false);
         setSpacerTriggerVisible(false);
         return;
@@ -739,6 +958,7 @@ const description =
       const isSpacerLine = currentLine.trim() === "<!-- spacer -->";
 
       if (currentLine.trim() !== "" && !isSpacerLine) {
+        clearSpacerMirror();
         setSpacerTriggerMode(false);
         setSpacerTriggerVisible(false);
         return;
@@ -757,7 +977,9 @@ const description =
       spacerMirror.style.whiteSpace = "pre-wrap";
       spacerMirror.style.overflowWrap = "break-word";
       spacerMirror.style.wordBreak = style.wordBreak;
-      spacerMirror.innerHTML = `${escapeHtml(value.slice(0, position)).replaceAll(
+      spacerMirror.innerHTML = `${escapeHtml(
+        value.slice(0, position),
+      ).replaceAll(
         "\n",
         "<br>",
       )}<span class="editor-caret-marker">&#8203;</span>`;
@@ -776,6 +998,7 @@ const description =
         textarea.scrollTop +
         (lineHeight - triggerHeight) / 2;
 
+      clearSpacerMirror();
       spacerTrigger.style.top = `${top}px`;
       setSpacerTriggerVisible(
         top + triggerHeight >= 0 && top <= textarea.clientHeight,
@@ -792,11 +1015,7 @@ const description =
 
       // Native insertText creates a browser undo transaction. The fallback is
       // kept for browsers that do not expose execCommand for textareas.
-      const inserted = document.execCommand(
-        "insertText",
-        false,
-        replacement,
-      );
+      const inserted = document.execCommand("insertText", false, replacement);
       if (!inserted) {
         textarea.setRangeText(replacement, start, end, "end");
         textarea.dispatchEvent(new Event("input", { bubbles: true }));
@@ -857,13 +1076,14 @@ const description =
     window.addEventListener("resize", updateSpacerTrigger);
     new ResizeObserver(updateSpacerTrigger).observe(textarea);
 
-    function updateAvatarControls(statusKey?: "avatarPending" | "avatarUploadFailed") {
-      avatarStatus.textContent =
-        statusKey
-          ? message(statusKey)
-          : avatarDataUrl
-            ? message("avatarSet")
-            : message("avatarUnset");
+    function updateAvatarControls(
+      statusKey?: "avatarPending" | "avatarUploadFailed",
+    ) {
+      avatarStatus.textContent = statusKey
+        ? message(statusKey)
+        : avatarDataUrl
+          ? message("avatarSet")
+          : message("avatarUnset");
       editAvatarButton.disabled = !avatarDataUrl;
       clearAvatarButton.disabled = !avatarDataUrl;
     }
@@ -1076,9 +1296,10 @@ const description =
     function decorateContactRow(identity: Element) {
       const contactParagraph = identity.nextElementSibling;
       const contactText = contactParagraph?.textContent?.trim() ?? "";
-      const looksLikeContact = /@|linkedin|github|email|メール|電話|携帯|phone|tel|website|ポートフォリオ/i.test(
-        contactText,
-      );
+      const looksLikeContact =
+        /@|linkedin|github|email|メール|電話|携帯|phone|tel|website|ポートフォリオ/i.test(
+          contactText,
+        );
       if (
         !contactParagraph ||
         contactParagraph.tagName !== "P" ||
@@ -1086,9 +1307,11 @@ const description =
         (!contactParagraph.querySelector("a") && !looksLikeContact)
       )
         return null;
-      contactParagraph.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
-        link.replaceWith(document.createTextNode(link.textContent ?? ""));
-      });
+      contactParagraph
+        .querySelectorAll('a[href^="mailto:"]')
+        .forEach((link) => {
+          link.replaceWith(document.createTextNode(link.textContent ?? ""));
+        });
       contactParagraph.querySelectorAll("a").forEach((link) => {
         link.setAttribute("target", "_blank");
         link.setAttribute("rel", "noreferrer");
@@ -1261,10 +1484,7 @@ const description =
         page.className = "resume-page";
         page.setAttribute(
           "aria-label",
-          message("pageAriaLabel").replace(
-            "{count}",
-            String(totalPages + 1),
-          ),
+          message("pageAriaLabel").replace("{count}", String(totalPages + 1)),
         );
         frame.appendChild(page);
         pages.appendChild(frame);
@@ -1354,6 +1574,11 @@ const description =
       const source = document.createElement("div");
       source.className = "resume-page resume-page-measure";
       source.innerHTML = renderMarkdown(textarea.value);
+      source
+        .querySelectorAll<HTMLHeadingElement>("h1, h2, h3, h4, h5")
+        .forEach((heading, index) => {
+          heading.dataset.outlineIndex = String(index);
+        });
       decorateAvatar(source);
       pages.replaceChildren(source);
 
@@ -1376,6 +1601,7 @@ const description =
 
     let debounceTimer: ReturnType<typeof setTimeout>;
     textarea.addEventListener("input", () => {
+      updateEditorOutline();
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         render();
@@ -1430,6 +1656,7 @@ const description =
     document.getElementById("load-sample")?.addEventListener("click", () => {
       if (!confirm(message("loadSampleConfirm"))) return;
       textarea.value = sampleText;
+      updateEditorOutline();
       render();
       persist();
     });
@@ -1437,6 +1664,7 @@ const description =
     document.getElementById("clear-editor")?.addEventListener("click", () => {
       if (!confirm(message("clearConfirm"))) return;
       textarea.value = "";
+      updateEditorOutline();
       render();
       persist();
     });
@@ -1511,6 +1739,7 @@ const description =
       const reader = new FileReader();
       reader.onload = () => {
         textarea.value = String(reader.result ?? "");
+        updateEditorOutline();
         render();
         persist();
       };
