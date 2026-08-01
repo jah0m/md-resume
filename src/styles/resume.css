@@ -822,7 +822,7 @@
   height: var(--avatar-crop-size);
   object-fit: contain;
   opacity: 0.42;
-  transform: translate(-50%, -50%) translate(var(--avatar-offset-x, 0%), var(--avatar-offset-y, 0%)) scale(var(--avatar-zoom, 1));
+  transform: translate(-50%, -50%) translate(var(--avatar-offset-x, 0px), var(--avatar-offset-y, 0px)) scale(var(--avatar-source-zoom, var(--avatar-zoom, 1)));
   transform-origin: center;
   will-change: transform;
   pointer-events: none;
@@ -838,6 +838,10 @@
   transform: translate(-50%, -50%);
   outline: 2px solid rgba(255, 255, 255, 0.92);
   box-shadow: 0 5px 18px rgba(20, 36, 49, 0.14);
+}
+
+.avatar-editor-crop-window[data-shape='rectangle'] {
+  width: calc(var(--avatar-crop-size) * 0.75);
 }
 
 .avatar-editor-crop-window img {
@@ -1451,6 +1455,11 @@
   height: 30mm;
   justify-self: end;
   background: transparent;
+}
+
+#resume-preview .resume-avatar-frame[data-shape='rectangle'] {
+  width: 22.5mm;
+  height: 30mm;
 }
 
 #resume-preview .resume-avatar {

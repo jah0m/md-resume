@@ -202,9 +202,9 @@ const description =
                     <input
                       type="radio"
                       name="avatar-shape"
-                      value="square"
+                      value="rectangle"
                     />
-                    <span data-i18n="square">方形</span>
+                    <span data-i18n="rectangle">長方形</span>
                   </label>
                   <label>
                     <input
@@ -607,28 +607,28 @@ const description =
             ? "circle"
             : parsed.shape === "circle"
               ? "circle"
-              : "square",
+              : "rectangle",
           x: Number.isFinite(Number(parsed.x)) ? Number(parsed.x) : 0,
           y: Number.isFinite(Number(parsed.y)) ? Number(parsed.y) : 0,
         };
       } catch {
         return {
           zoom: 100,
-          shape: isDefaultAvatar ? "circle" : "square",
+          shape: isDefaultAvatar ? "circle" : "rectangle",
           x: 0,
           y: 0,
         };
       }
     })();
     let avatarZoom = Math.min(240, Math.max(100, savedAvatarSettings.zoom));
-    let avatarShape: "square" | "circle" = savedAvatarSettings.shape;
+    let avatarShape: "rectangle" | "circle" = savedAvatarSettings.shape;
     let avatarOffset = {
       x: Math.min(100, Math.max(-100, savedAvatarSettings.x)),
       y: Math.min(100, Math.max(-100, savedAvatarSettings.y)),
     };
     let avatarDraftDataUrl = avatarDataUrl;
     let avatarDraftZoom = avatarZoom;
-    let avatarDraftShape: "square" | "circle" = avatarShape;
+    let avatarDraftShape: "rectangle" | "circle" = avatarShape;
     let avatarDraftOffset = { ...avatarOffset };
 
     const savedPageMargins = (() => {
@@ -1115,29 +1115,64 @@ const description =
 
     function syncAvatarEditor() {
       avatarEditorCropWindow.dataset.shape = avatarDraftShape;
+      const cropImageWidth = avatarEditorImage.clientWidth;
+      const cropImageHeight = avatarEditorImage.clientHeight;
+      const naturalWidth = avatarEditorImage.naturalWidth;
+      const naturalHeight = avatarEditorImage.naturalHeight;
+      const sourceImageWidth = avatarEditorSourceImage.clientWidth;
+      const sourceImageHeight = avatarEditorSourceImage.clientHeight;
+      const cropImageScale =
+        naturalWidth > 0 && naturalHeight > 0
+          ? Math.min(
+              cropImageWidth / naturalWidth,
+              cropImageHeight / naturalHeight,
+            )
+          : 0;
+      const sourceImageScale =
+        naturalWidth > 0 && naturalHeight > 0
+          ? Math.min(
+              sourceImageWidth / naturalWidth,
+              sourceImageHeight / naturalHeight,
+            )
+          : 0;
+      const sourceScaleRatio =
+        cropImageScale > 0 && sourceImageScale > 0
+          ? cropImageScale / sourceImageScale
+          : avatarDraftShape === "rectangle"
+            ? 0.75
+            : 1;
+      const offsetX =
+        cropImageWidth > 0
+          ? `${(avatarDraftOffset.x / 100) * cropImageWidth}px`
+          : `${avatarDraftOffset.x}%`;
+      const offsetY =
+        cropImageHeight > 0
+          ? `${(avatarDraftOffset.y / 100) * cropImageHeight}px`
+          : `${avatarDraftOffset.y}%`;
+
       avatarEditorCropWindow.style.setProperty(
         "--avatar-zoom",
         String(avatarDraftZoom / 100),
       );
       avatarEditorCropWindow.style.setProperty(
         "--avatar-offset-x",
-        `${avatarDraftOffset.x}%`,
+        offsetX,
       );
       avatarEditorCropWindow.style.setProperty(
         "--avatar-offset-y",
-        `${avatarDraftOffset.y}%`,
+        offsetY,
       );
       avatarEditorSourceImage.style.setProperty(
-        "--avatar-zoom",
-        String(avatarDraftZoom / 100),
+        "--avatar-source-zoom",
+        String((avatarDraftZoom / 100) * sourceScaleRatio),
       );
       avatarEditorSourceImage.style.setProperty(
         "--avatar-offset-x",
-        `${avatarDraftOffset.x}%`,
+        offsetX,
       );
       avatarEditorSourceImage.style.setProperty(
         "--avatar-offset-y",
-        `${avatarDraftOffset.y}%`,
+        offsetY,
       );
       avatarZoomInput.value = String(avatarDraftZoom);
       avatarZoomValue.value = `${avatarDraftZoom}%`;
@@ -1815,11 +1850,14 @@ const description =
       syncAvatarEditor();
     });
 
+    avatarEditorSourceImage.addEventListener("load", syncAvatarEditor);
+    avatarEditorImage.addEventListener("load", syncAvatarEditor);
+
     avatarShapeInputs.forEach((input) => {
       input.addEventListener("change", () => {
         if (
           input.checked &&
-          (input.value === "square" || input.value === "circle")
+          (input.value === "rectangle" || input.value === "circle")
         ) {
           avatarDraftShape = input.value;
           syncAvatarEditor();

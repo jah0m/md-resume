@@ -40,7 +40,7 @@ export const messages = {
     photoPreviewAlt: "プロフィール写真の編集プレビュー",
     zoom: "拡大率",
     displayShape: "表示形状",
-    square: "方形",
+    rectangle: "長方形",
     circle: "円形",
     photoEditorNote:
       "ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。",
@@ -134,7 +134,7 @@ export const messages = {
     photoPreviewAlt: "Profile photo editing preview",
     zoom: "Zoom",
     displayShape: "Shape",
-    square: "Square",
+    rectangle: "Rectangle",
     circle: "Circle",
     photoEditorNote:
       "Drag to reposition and scroll to zoom. Select Save to apply changes to the preview.",
@@ -228,7 +228,7 @@ export const messages = {
     photoPreviewAlt: "照片编辑预览",
     zoom: "缩放",
     displayShape: "头像形状",
-    square: "方形",
+    rectangle: "长方形",
     circle: "圆形",
     photoEditorNote:
       "拖动调整位置，滚动鼠标滚轮缩放。点击“保存”后，修改才会应用到预览中。",
