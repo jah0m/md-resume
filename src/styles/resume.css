@@ -1472,24 +1472,58 @@
 
 .usage-ai-prompt {
   margin-top: 1rem;
-  padding: 0.8rem 0.9rem;
+  padding: 0.95rem 1rem 1rem;
   color: #4b5964;
-  background: rgba(247, 249, 250, 0.9);
+  background: linear-gradient(145deg, rgba(245, 249, 251, 0.98), rgba(232, 241, 246, 0.9));
   border: 1px solid #d8e0e5;
-  border-left: 3px solid var(--ui-accent);
-  border-radius: 7px;
+  border-left: 4px solid var(--ui-accent);
+  border-radius: 9px;
+  box-shadow: 0 5px 16px rgba(17, 39, 57, 0.06);
 }
 
-.usage-ai-prompt > strong {
+.usage-ai-prompt-heading {
+  margin-bottom: 0.55rem;
+}
+
+.usage-ai-prompt-kicker {
   display: block;
-  margin-bottom: 0.35rem;
-  color: #30495c;
-  font-size: 0.82rem;
+  margin-bottom: 0.2rem;
+  color: var(--ui-accent);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .usage-ai-prompt p {
   margin: 0;
+  padding: 0.75rem 0.8rem;
+  color: #3f4b56;
+  font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
   user-select: text;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(190, 205, 213, 0.9);
+  border-radius: 6px;
+}
+
+.usage-ai-prompt button {
+  display: block;
+  margin: 0.7rem 0 0 auto;
+  padding: 0.42rem 0.7rem;
+  color: #fff;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 750;
+  background: var(--ui-accent);
+  border: 1px solid var(--ui-accent);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.usage-ai-prompt button:hover {
+  filter: brightness(1.08);
 }
 
 .site-footer {
@@ -1575,10 +1609,6 @@
 
   .usage-ai-prompt {
     color: #3f4b56;
-  }
-
-  .usage-ai-prompt > strong {
-    font-size: 0.82rem;
   }
 
   .usage-section > .site-footer {

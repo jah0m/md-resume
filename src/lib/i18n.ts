@@ -74,9 +74,10 @@ export const messages = {
     contactTitle: "連絡先の書き方",
     contactHelp:
       "名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。",
-    aiPromptTitle: "AIで職務経歴書を整える",
     aiPrompt:
       "このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。",
+    copyPrompt: "Promptをコピー",
+    promptCopied: "コピーしました",
     syntaxTitle: "対応記法",
     syntaxText:
       "見出し（# ## ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。",
@@ -156,9 +157,10 @@ export const messages = {
     contactTitle: "Contact information",
     contactHelp:
       "Write one line directly below your name to show it beneath the title. Keep <strong>Phone and Email</strong> as plain text; use Markdown links for <strong>LinkedIn, GitHub, Portfolio, personal websites, social media</strong>, and other profiles.",
-    aiPromptTitle: "Format your resume with AI",
     aiPrompt:
       "Using the headings and structure of this sample, organize my resume as Markdown. Do not change the content; use placeholders such as \"〇〇\" where information is missing.",
+    copyPrompt: "Copy prompt",
+    promptCopied: "Copied",
     syntaxTitle: "Supported syntax",
     syntaxText:
       "Supports standard Markdown syntax, including headings (# ## ###), lists, tables, and bold text.",
@@ -235,9 +237,10 @@ export const messages = {
     contactTitle: "联系方式",
     contactHelp:
       "在姓名后另起一行填写联系方式，内容会显示在标题下方。<strong>Phone 和 Email</strong>直接写文本；<strong>LinkedIn、GitHub、Portfolio、个人网站、社交媒体</strong>等使用 Markdown 链接。",
-    aiPromptTitle: "使用 AI 整理履历书",
     aiPrompt:
       "请按照这个示例的标题和结构，将我的履历书整理为 Markdown。不要修改内容；信息不足的地方请使用“〇〇”等占位符。",
+    copyPrompt: "复制 Prompt",
+    promptCopied: "已复制",
     syntaxTitle: "支持的 Markdown 语法",
     syntaxText: "支持标题（# ## ###）、列表、表格、粗体等标准 Markdown 语法。",
     clearConfirm: "要清空编辑器中的全部内容吗？",

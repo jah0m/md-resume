@@ -305,10 +305,13 @@ const description =
           </li>
         </ol>
         <div class="usage-ai-prompt">
-          <strong data-i18n="aiPromptTitle">AIで職務経歴書を整える</strong>
-          <p data-i18n="aiPrompt">
+          <div class="usage-ai-prompt-heading">
+            <span class="usage-ai-prompt-kicker">AI PROMPT</span>
+          </div>
+          <p id="ai-prompt-text" data-i18n="aiPrompt">
             このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。
           </p>
+          <button id="copy-ai-prompt" type="button" data-i18n="copyPrompt">Promptをコピー</button>
         </div>
         <div class="usage-contact-tip">
           <strong data-i18n="contactTitle">連絡先の書き方</strong>
@@ -356,6 +359,9 @@ const description =
     ) as HTMLElement;
     const pages = document.getElementById("resume-pages") as HTMLElement;
     const pageCount = document.getElementById("page-count") as HTMLElement;
+    const copyAiPromptButton = document.getElementById(
+      "copy-ai-prompt",
+    ) as HTMLButtonElement;
     const themeButtons = Array.from(
       document.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
     );
@@ -1111,6 +1117,39 @@ const description =
 
     document.getElementById("save-pdf")?.addEventListener("click", () => {
       window.print();
+    });
+
+    copyAiPromptButton.addEventListener("click", async () => {
+      const prompt = message("aiPrompt");
+      let copied = false;
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(prompt);
+          copied = true;
+        }
+      } catch {
+        copied = false;
+      }
+
+      if (!copied) {
+        const fallback = document.createElement("textarea");
+        fallback.value = prompt;
+        fallback.setAttribute("readonly", "");
+        fallback.style.position = "fixed";
+        fallback.style.opacity = "0";
+        document.body.appendChild(fallback);
+        fallback.select();
+        copied = document.execCommand("copy");
+        fallback.remove();
+      }
+
+      if (copied) {
+        copyAiPromptButton.textContent = message("promptCopied");
+        window.setTimeout(() => {
+          copyAiPromptButton.textContent = message("copyPrompt");
+        }, 1800);
+      }
     });
 
     document.getElementById("save-md")?.addEventListener("click", () => {
