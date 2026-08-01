@@ -4,6 +4,8 @@
 
 入力した内容は、デザイン性のあるA4レイアウトに整形されます。サーバーに送信されることなく、ブラウザ内だけで編集・プレビュー・PDF保存まで完結します。
 
+🌐 [デモを試す](https://md-resume.jahom.workers.dev/)
+
 ![Markdown Resume Studio preview](./public/readme-preview.png)
 
 ## 使い方
