@@ -65,28 +65,29 @@ export const messages = {
     savePdf: "PDFとして保存",
     aboutTitle: "このツールについて",
     aboutText:
-      "日本の定番テンプレートでは表現しにくい、自分らしさとキャリアの個性を、Markdownから自分で組み立てられる職務経歴書に。入力した内容はデザイン性のあるA4レイアウトに整形され、サーバーに送信されることなくブラウザ内で処理されます。",
+      "Markdownで職務経歴書を作成し、内容をブラウザ内だけでA4 PDFに変換できます。",
     howToTitle: "使い方",
     howToStep1:
-      "「サンプルを読み込む」でMarkdownの書き方を確認するか、お手持ちの.mdファイルを開きます。",
+      "サンプルを読むか、.mdファイルを開きます。",
     howToStep2:
-      "左側のエディタで内容を編集すると、右側のプレビューにリアルタイムで反映されます。",
+      "左のMarkdownを編集すると、右のプレビューに反映されます。",
     howToStep3:
-      "「PDFとして保存」を押すと印刷ダイアログが開きます。出力先を「PDFに保存」にして保存すれば完了です。",
+      "「PDFとして保存」を押し、印刷ダイアログで「PDFに保存」を選びます。",
     howToStep4:
       "お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。",
     contactTitle: "連絡先の書き方",
     contactHelp:
-      "名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。",
+      "名前の直後に1行で記載。<strong>Phone・Email</strong>はテキスト、<strong>LinkedIn・GitHub等</strong>はMarkdownリンク。",
     aiPrompt:
       "このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。",
     copyPrompt: "Promptをコピー",
     promptCopied: "コピーしました",
     syntaxTitle: "対応記法",
     syntaxText:
-      "見出し（# ## ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。",
+      "見出し、箇条書き、表、太字に対応しています。",
+    spacerTitle: "余白の調整",
     spacerHelp:
-      "余白を追加するには、単独行に <!-- spacer --> と記述します。本文約1行分の間隔が追加されます。",
+      "Markdownの単独行にこの記法を追加すると、本文約1行分の間隔が入ります。",
     insertSpacer: "余白を追加",
     removeSpacer: "余白を削除",
     clearConfirm: "編集内容をすべて消去しますか？",
@@ -156,28 +157,29 @@ export const messages = {
     savePdf: "Save as PDF",
     aboutTitle: "About this tool",
     aboutText:
-      "Standard resume templates can make it hard to express your personality and career story. This tool lets you build a distinctive resume from Markdown, format it as a polished A4 document, and process everything locally in your browser without sending your content to a server.",
+      "Create a resume in Markdown and turn it into an A4 PDF entirely in your browser.",
     howToTitle: "How to use",
     howToStep1:
-      "Select Load sample to see how the Markdown is structured, or open your own .md file.",
+      "Load the sample or open your own .md file.",
     howToStep2:
-      "Edit your content in the left-hand editor and see the preview update in real time on the right.",
+      "Edit Markdown on the left and see the preview update on the right.",
     howToStep3:
-      "Select Save as PDF, then choose Save to PDF as the destination in the print dialog.",
+      "Select Save as PDF, then choose Save to PDF in the print dialog.",
     howToStep4:
       "You can also give an AI tool the sample and your existing resume and ask it to reorganize your content to match the sample structure. Check the service's privacy settings before sending personal information to an external AI tool.",
     contactTitle: "Contact information",
     contactHelp:
-      "Write one line directly below your name to show it beneath the title. Keep <strong>Phone and Email</strong> as plain text; use Markdown links for <strong>LinkedIn, GitHub, Portfolio, personal websites, social media</strong>, and other profiles.",
+      "Write one line below your name. Keep <strong>Phone and Email</strong> as text; use Markdown links for <strong>LinkedIn, GitHub, and other profiles</strong>.",
     aiPrompt:
       "Using the headings and structure of this sample, organize my resume as Markdown. Do not change the content; use placeholders such as \"〇〇\" where information is missing.",
     copyPrompt: "Copy prompt",
     promptCopied: "Copied",
     syntaxTitle: "Supported syntax",
     syntaxText:
-      "Supports standard Markdown syntax, including headings (# ## ###), lists, tables, and bold text.",
+      "Supports headings, lists, tables, and bold text.",
+    spacerTitle: "Adjusting space",
     spacerHelp:
-      "To add extra space, write <!-- spacer --> on its own line. It adds roughly one line of body-text height.",
+      "Add this on its own Markdown line to insert roughly one line of space.",
     insertSpacer: "Add spacing",
     removeSpacer: "Remove spacing",
     clearConfirm: "Clear all content in the editor?",
@@ -247,24 +249,25 @@ export const messages = {
     savePdf: "导出 PDF",
     aboutTitle: "关于本工具",
     aboutText:
-      "日本常见的履历书模板往往难以展现个人风格和职业经历。这个工具让你从 Markdown 出发，自己排版一份简洁、有设计感的 A4 履历书。所有内容仅在浏览器中处理，不会上传到服务器。",
+      "用 Markdown 制作履历书，并在浏览器内直接转换为 A4 PDF。",
     howToTitle: "使用方法",
-    howToStep1: "点击“加载示例”查看 Markdown 的写法，或打开自己的 .md 文件。",
-    howToStep2: "在左侧编辑器中修改内容，右侧预览会实时更新。",
-    howToStep3: "点击“导出 PDF”，在打印对话框中将输出目标选择为“保存为 PDF”。",
+    howToStep1: "加载示例，或打开自己的 .md 文件。",
+    howToStep2: "编辑左侧 Markdown，右侧预览会同步更新。",
+    howToStep3: "点击“导出 PDF”，在打印对话框中选择“保存为 PDF”。",
     howToStep4:
       "也可以把示例和自己的履历书一起交给 AI，请它按照示例的标题和结构整理内容。向外部 AI 服务发送个人信息前，请先确认该服务的隐私设置。",
     contactTitle: "联系方式",
     contactHelp:
-      "在姓名后另起一行填写联系方式，内容会显示在标题下方。<strong>Phone 和 Email</strong>直接写文本；<strong>LinkedIn、GitHub、Portfolio、个人网站、社交媒体</strong>等使用 Markdown 链接。",
+      "在姓名后另起一行填写。<strong>Phone 和 Email</strong>直接写文本；<strong>LinkedIn、GitHub 等</strong>使用 Markdown 链接。",
     aiPrompt:
       "请按照这个示例的标题和结构，将我的履历书整理为 Markdown。不要修改内容；信息不足的地方请使用“〇〇”等占位符。",
     copyPrompt: "复制 Prompt",
     promptCopied: "已复制",
     syntaxTitle: "支持的 Markdown 语法",
-    syntaxText: "支持标题（# ## ###）、列表、表格、粗体等标准 Markdown 语法。",
+    syntaxText: "支持标题、列表、表格和粗体。",
+    spacerTitle: "调整间距",
     spacerHelp:
-      "如需增加间距，请单独写一行 <!-- spacer -->。它会增加大约一行正文的高度。",
+      "在 Markdown 中单独添加这一行，即可增加大约一行正文的间距。",
     insertSpacer: "增加间距",
     removeSpacer: "删除间距",
     clearConfirm: "要清空编辑器中的全部内容吗？",

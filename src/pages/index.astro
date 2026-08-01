@@ -332,9 +332,6 @@ const description =
           <li data-i18n="howToStep3">
             「PDFとして保存」を押すと印刷ダイアログが開きます。出力先を「PDFに保存」にして保存すれば完了です。
           </li>
-          <li data-i18n="howToStep4">
-            お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。
-          </li>
         </ol>
         <div class="usage-ai-prompt">
           <div class="usage-ai-prompt-heading">
@@ -356,9 +353,13 @@ const description =
           見出し（# ##
           ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。
         </p>
-        <p class="usage-syntax-note" data-i18n="spacerHelp">
-          余白を追加するには、単独行に <code>&lt;!-- spacer --&gt;</code> と記述します。本文約1行分の間隔が追加されます。
-        </p>
+        <div class="usage-spacer-tip">
+          <strong data-i18n="spacerTitle">余白の調整</strong>
+          <p data-i18n="spacerHelp">
+            Markdownの単独行にこの記法を追加すると、本文約1行分の間隔が入ります。
+          </p>
+          <code class="usage-spacer-code">&lt;!-- spacer --&gt;</code>
+        </div>
         <footer class="site-footer">
           <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
         </footer>
