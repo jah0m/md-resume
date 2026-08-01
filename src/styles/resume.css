@@ -94,6 +94,56 @@
   padding-bottom: 0.15rem;
 }
 
+.language-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #667581;
+  font-size: 0.68rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.language-options {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12rem;
+  padding: 0.16rem;
+  background: #f4f7f9;
+  border: 1px solid #dbe3e8;
+  border-radius: 7px;
+}
+
+.language-options button {
+  width: 2rem;
+  padding: 0.24rem 0.3rem;
+  color: #667581;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 750;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.language-options button:hover {
+  color: var(--ui-accent);
+}
+
+.language-options button:focus-visible {
+  outline: 2px solid rgba(53, 112, 160, 0.24);
+  outline-offset: 1px;
+}
+
+.language-options button[aria-pressed='true'] {
+  color: var(--ui-accent);
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(19, 40, 58, 0.12);
+}
+
 .header-detail {
   color: #8a97a2;
   font-size: 0.7rem;

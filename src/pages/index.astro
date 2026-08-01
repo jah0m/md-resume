@@ -17,14 +17,26 @@ const description =
             <span class="brand-mark" aria-hidden="true">MD</span>
             <div>
               <p class="eyebrow">PERSONAL RESUME STUDIO</p>
-              <h1>型にはまらない、あなたの職務経歴書</h1>
+              <h1 data-i18n="brandTitle">型にはまらない、あなたの職務経歴書</h1>
             </div>
           </div>
-          <p class="lede">Markdownで書いて、自分のキャリアを自分で設計する。</p>
+          <p class="lede" data-i18n="lede">Markdownで書いて、自分のキャリアを自分で設計する。</p>
         </div>
         <div class="header-meta">
-          <span class="privacy-note">データはブラウザ内だけで処理</span>
-          <span class="header-detail">A4 / Markdown → PDF</span>
+          <span class="privacy-note" data-i18n="privacyNote">データはブラウザ内だけで処理</span>
+          <span class="header-detail" data-i18n="headerDetail">A4 / Markdown → PDF</span>
+          <div
+            class="language-picker"
+            role="group"
+            aria-label="表示言語"
+            data-i18n-aria-label="languageLabel"
+          >
+            <div class="language-options">
+              <button type="button" data-locale-option="ja" aria-pressed="true">日</button>
+              <button type="button" data-locale-option="en" aria-pressed="false">EN</button>
+              <button type="button" data-locale-option="zh" aria-pressed="false">中</button>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -33,16 +45,16 @@ const description =
       <div class="editor-pane">
         <div class="panel-heading">
           <div>
-            <div class="pane-label">原稿エディター <span>自動保存</span></div>
-            <p class="panel-title">Markdownで内容を整える</p>
+            <div class="pane-label"><span data-i18n="editorPaneLabel">原稿エディター</span> <span data-i18n="autosave">自動保存</span></div>
+            <p class="panel-title" data-i18n="editorTitle">Markdownで内容を整える</p>
           </div>
           <span class="panel-index">01</span>
         </div>
         <div class="editor-toolbar">
           <div class="action-group">
-            <button id="load-sample">サンプル</button>
-            <button id="download-sample">サンプルを保存</button>
-            <label for="file-input">.mdを開く</label>
+            <button id="load-sample" data-i18n="loadSample">サンプル</button>
+            <button id="download-sample" data-i18n="downloadSample">サンプルを保存</button>
+            <label for="file-input" data-i18n="openMd">.mdを開く</label>
             <input
               id="file-input"
               type="file"
@@ -50,19 +62,19 @@ const description =
             />
           </div>
           <div class="action-group action-group-secondary">
-            <button id="save-md">.md保存</button>
-            <button id="clear-editor">クリア</button>
+            <button id="save-md" data-i18n="saveMd">.md保存</button>
+            <button id="clear-editor" data-i18n="clear">クリア</button>
           </div>
         </div>
         <div class="avatar-control">
           <div class="avatar-control-copy">
-            <span class="avatar-control-label">プロフィール写真</span>
+            <span class="avatar-control-label" data-i18n="profilePhoto">プロフィール写真</span>
             <span id="avatar-status">未設定</span>
           </div>
           <div class="avatar-control-actions">
-            <label for="avatar-input">画像をアップロード</label>
-            <button id="edit-avatar" type="button" disabled>写真を編集</button>
-            <button id="clear-avatar" type="button" disabled>取り除く</button>
+            <label for="avatar-input" data-i18n="uploadImage">画像をアップロード</label>
+            <button id="edit-avatar" type="button" disabled data-i18n="editPhoto">写真を編集</button>
+            <button id="clear-avatar" type="button" disabled data-i18n="removePhoto">取り除く</button>
             <input id="avatar-input" type="file" accept="image/*" />
           </div>
         </div>
@@ -73,14 +85,16 @@ const description =
         >
           <div class="avatar-editor-heading">
             <div>
-              <span class="avatar-editor-kicker">PROFILE PHOTO</span>
-              <h3 id="avatar-editor-title">写真を整える</h3>
+              <span class="avatar-editor-kicker" data-i18n="photoKicker">PROFILE PHOTO</span>
+              <h3 id="avatar-editor-title" data-i18n="editPhotoTitle">写真を整える</h3>
             </div>
             <button
               id="close-avatar-editor"
               class="avatar-editor-close"
               type="button"
-              aria-label="写真編集を閉じる">閉じる</button
+              aria-label="写真編集を閉じる"
+              data-i18n="close"
+              data-i18n-aria-label="closePhotoEditor">閉じる</button
             >
           </div>
           <div class="avatar-editor-body">
@@ -90,6 +104,7 @@ const description =
               tabindex="0"
               role="application"
               aria-label="写真をドラッグして位置を調整。ホイールで拡大縮小"
+              data-i18n-aria-label="adjustPhoto"
             >
               <img
                 id="avatar-editor-source-image"
@@ -105,13 +120,14 @@ const description =
                 <img
                   id="avatar-editor-image"
                   alt="プロフィール写真の編集プレビュー"
+                  data-i18n-alt="photoPreviewAlt"
                 />
               </div>
             </div>
             <div class="avatar-editor-settings">
               <label class="avatar-zoom-control" for="avatar-zoom">
                 <span
-                  >拡大率 <output id="avatar-zoom-value" for="avatar-zoom"
+                  ><span data-i18n="zoom">拡大率</span> <output id="avatar-zoom-value" for="avatar-zoom"
                     >100%</output
                   ></span
                 >
@@ -125,7 +141,7 @@ const description =
                 />
               </label>
               <fieldset class="avatar-shape-control">
-                <legend>表示形状</legend>
+                <legend data-i18n="displayShape">表示形状</legend>
                 <div class="avatar-shape-options">
                   <label>
                     <input
@@ -134,16 +150,16 @@ const description =
                       value="square"
                       checked
                     />
-                    <span>方形</span>
+                    <span data-i18n="square">方形</span>
                   </label>
                   <label>
                     <input type="radio" name="avatar-shape" value="circle" />
-                    <span>円形</span>
+                    <span data-i18n="circle">円形</span>
                   </label>
                 </div>
               </fieldset>
               <p class="avatar-editor-note">
-                ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。
+                <span data-i18n="photoEditorNote">ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。</span>
               </p>
             </div>
           </div>
@@ -151,67 +167,75 @@ const description =
             <button
               id="cancel-avatar-editor"
               class="avatar-editor-secondary"
-              type="button">キャンセル</button
+              type="button" data-i18n="cancel">キャンセル</button
             >
             <button
               id="save-avatar-editor"
               class="avatar-editor-primary"
-              type="button">保存</button
+              type="button" data-i18n="save">保存</button
             >
           </div>
         </dialog>
         <textarea
           id="markdown-input"
           spellcheck="false"
-          aria-label="Markdown入力"></textarea>
+          aria-label="Markdown入力"
+          data-i18n-aria-label="editorInput"></textarea>
       </div>
       <div class="preview-pane">
         <div class="panel-heading">
           <div>
             <div class="pane-label">
-              プレビュー <span id="page-count">A4 / Professional</span>
+              <span data-i18n="previewLabel">プレビュー</span>
+              <span id="page-count">A4 / Professional</span>
             </div>
-            <p class="panel-title">職務経歴書の仕上がり</p>
+            <p class="panel-title" data-i18n="previewTitle">職務経歴書の仕上がり</p>
           </div>
           <div class="preview-actions">
-            <div class="theme-picker" role="group" aria-label="履歴書テーマ">
-              <span>テーマ</span>
+            <div class="theme-picker" role="group" aria-label="履歴書テーマ" data-i18n-aria-label="theme">
+              <span data-i18n="theme">テーマ</span>
               <div class="theme-dots">
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="navy"
                   aria-label="クラシック・ネイビー"
+                  data-i18n-aria-label="themeNavy"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="graphite"
                   aria-label="ミニマル・グラファイト"
+                  data-i18n-aria-label="themeGraphite"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="slate"
                   aria-label="スレート・ブルー"
+                  data-i18n-aria-label="themeSlate"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="forest"
                   aria-label="フォレスト・グリーン"
+                  data-i18n-aria-label="themeForest"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="burgundy"
                   aria-label="ワイン・バーガンディ"
+                  data-i18n-aria-label="themeBurgundy"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot"
                   data-theme-option="amber"
                   aria-label="ウォーム・アンバー"
+                  data-i18n-aria-label="themeAmber"
                   aria-pressed="false"></button>
               </div>
             </div>
@@ -219,78 +243,86 @@ const description =
               class="background-picker"
               role="group"
               aria-label="履歴書の背景"
+              data-i18n-aria-label="background"
             >
-              <span>背景</span>
+              <span data-i18n="background">背景</span>
               <div class="theme-dots">
                 <button
                   type="button"
                   class="theme-dot background-dot"
                   data-background-option="paper"
                   aria-label="ピュア・ホワイト"
+                  data-i18n-aria-label="backgroundPaper"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot background-dot"
                   data-background-option="mist"
                   aria-label="クール・ミスト"
+                  data-i18n-aria-label="backgroundMist"
                   aria-pressed="false"></button>
                 <button
                   type="button"
                   class="theme-dot background-dot"
                   data-background-option="linen"
                   aria-label="ソフト・リネン"
+                  data-i18n-aria-label="backgroundLinen"
                   aria-pressed="false"></button>
               </div>
             </div>
-            <button id="save-pdf" class="primary">PDFとして保存</button>
+            <button id="save-pdf" class="primary" data-i18n="savePdf">PDFとして保存</button>
           </div>
         </div>
         <div class="preview-scroll">
-          <article id="resume-preview" aria-label="職務経歴書プレビュー">
+          <article
+            id="resume-preview"
+            aria-label="職務経歴書プレビュー"
+            data-i18n-aria-label="resumePreview"
+          >
             <div id="resume-pages"></div>
           </article>
         </div>
         <p class="print-tip">
-          <strong>PDF保存のコツ</strong><span
+          <strong data-i18n="printTipTitle">PDF保存のコツ</strong><span data-i18n="printTip"
             >印刷設定で用紙を「A4」、倍率を「既定」、ヘッダーとフッターを「オフ」にすると最もきれいに仕上がります。</span>
         </p>
       </div>
       <section class="usage-section">
-        <h2>このツールについて</h2>
-        <p>
+        <h2 data-i18n="aboutTitle">このツールについて</h2>
+        <p data-i18n="aboutText">
           日本の定番テンプレートでは表現しにくい、自分らしさとキャリアの個性を、Markdownから自分で組み立てられる職務経歴書に。
           入力した内容はデザイン性のあるA4レイアウトに整形され、サーバーに送信されることなくブラウザ内で処理されます。
         </p>
-        <h2>使い方</h2>
+        <h2 data-i18n="howToTitle">使い方</h2>
         <ol>
-          <li>
+          <li data-i18n="howToStep1">
             「サンプルを読み込む」でMarkdownの書き方を確認するか、お手持ちの.mdファイルを開きます。
           </li>
-          <li>
+          <li data-i18n="howToStep2">
             左側のエディタで内容を編集すると、右側のプレビューにリアルタイムで反映されます。
           </li>
-          <li>
+          <li data-i18n="howToStep3">
             「PDFとして保存」を押すと印刷ダイアログが開きます。出力先を「PDFに保存」にして保存すれば完了です。
           </li>
-          <li>
+          <li data-i18n="howToStep4">
             お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。
           </li>
         </ol>
         <div class="usage-contact-tip">
-          <strong>連絡先の書き方</strong>
-          <p>
+          <strong data-i18n="contactTitle">連絡先の書き方</strong>
+          <p data-i18n-html="contactHelp">
             名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。
           </p>
         </div>
-        <h2>対応記法</h2>
-        <p>
+        <h2 data-i18n="syntaxTitle">対応記法</h2>
+        <p data-i18n="syntaxText">
           見出し（# ##
           ###）、箇条書き、表、太字などの標準的なMarkdown記法に対応しています。
         </p>
       </section>
     </div>
     <footer class="site-footer">
-      <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
+              <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
     </footer>
   </div>
 
@@ -298,6 +330,14 @@ const description =
 
   <script>
     import { renderMarkdown } from "../lib/markdown";
+    import {
+      getInitialLocale,
+      isLocale,
+      LOCALE_KEY,
+      translate,
+      type Locale,
+      type MessageKey,
+    } from "../lib/i18n";
 
     const STORAGE_KEY = "md-resume-content-v2";
     const THEME_KEY = "md-resume-theme";
@@ -319,6 +359,10 @@ const description =
         "[data-background-option]",
       ),
     );
+    const localeButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-locale-option]"),
+    );
+    let currentLocale: Locale = getInitialLocale();
     const avatarInput = document.getElementById(
       "avatar-input",
     ) as HTMLInputElement;
@@ -403,6 +447,50 @@ const description =
     let avatarDraftShape: "square" | "circle" = avatarShape;
     let avatarDraftOffset = { ...avatarOffset };
 
+    function message(key: string) {
+      return translate(currentLocale, key as MessageKey);
+    }
+
+    function applyLocale(locale: string) {
+      const nextLocale: Locale = isLocale(locale) ? locale : "ja";
+      currentLocale = nextLocale;
+      document.documentElement.lang = nextLocale === "zh" ? "zh-CN" : nextLocale;
+      document.documentElement.dataset.locale = nextLocale;
+
+      document.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
+        element.textContent = message(element.dataset.i18n ?? "");
+      });
+      document.querySelectorAll<HTMLElement>("[data-i18n-html]").forEach((element) => {
+        element.innerHTML = message(element.dataset.i18nHtml ?? "");
+      });
+      document
+        .querySelectorAll<HTMLElement>("[data-i18n-aria-label]")
+        .forEach((element) => {
+          element.setAttribute(
+            "aria-label",
+            message(element.dataset.i18nAriaLabel ?? ""),
+          );
+        });
+      document
+        .querySelectorAll<HTMLImageElement>("[data-i18n-alt]")
+        .forEach((element) => {
+          element.alt = message(element.dataset.i18nAlt ?? "");
+        });
+
+      document.title = message("documentTitle");
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute("content", message("description"));
+      localeButtons.forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.localeOption === nextLocale),
+        );
+      });
+      pageCount.textContent = formatPageCount(currentPageTotal);
+      updateAvatarControls();
+    }
+
     function applyTheme(theme: string) {
       const validThemes = [
         "navy",
@@ -437,6 +525,7 @@ const description =
     }
 
     let renderToken = 0;
+    let currentPageTotal = 1;
 
     function px(value: string) {
       const parsed = Number.parseFloat(value);
@@ -451,9 +540,17 @@ const description =
       return `${year}-${month}-${day}`;
     }
 
-    function updateAvatarControls(message?: string) {
+    function formatPageCount(count: number) {
+      return message("pageCount").replace("{count}", String(count));
+    }
+
+    function updateAvatarControls(statusKey?: "avatarPending" | "avatarUploadFailed") {
       avatarStatus.textContent =
-        message ?? (avatarDataUrl ? "設定済み" : "未設定");
+        statusKey
+          ? message(statusKey)
+          : avatarDataUrl
+            ? message("avatarSet")
+            : message("avatarUnset");
       editAvatarButton.disabled = !avatarDataUrl;
       clearAvatarButton.disabled = !avatarDataUrl;
     }
@@ -749,7 +846,7 @@ const description =
         const avatar = document.createElement("img");
         avatar.className = "resume-avatar";
         avatar.src = avatarDataUrl;
-        avatar.alt = "プロフィール写真";
+        avatar.alt = message("resumePhotoAlt");
         avatarFrame.append(avatar);
         metaRow.append(metaParagraph, avatarFrame);
         coverHeader.append(metaRow);
@@ -838,7 +935,13 @@ const description =
       const addPage = () => {
         const page = document.createElement("section");
         page.className = "resume-page";
-        page.setAttribute("aria-label", `職務経歴書 ${totalPages + 1}ページ目`);
+        page.setAttribute(
+          "aria-label",
+          message("pageAriaLabel").replace(
+            "{count}",
+            String(totalPages + 1),
+          ),
+        );
         pages.appendChild(page);
         currentPage = page;
         usedHeight = 0;
@@ -871,7 +974,8 @@ const description =
         dateElement.textContent = date;
         firstPage.appendChild(dateElement);
       }
-      pageCount.textContent = `A4 / ${totalPages || 1}ページ`;
+      currentPageTotal = totalPages || 1;
+      pageCount.textContent = formatPageCount(currentPageTotal);
     }
 
     function render() {
@@ -906,11 +1010,20 @@ const description =
 
     const saved = localStorage.getItem(STORAGE_KEY);
     textarea.value = saved && saved.trim().length > 0 ? saved : sampleText;
+    applyLocale(currentLocale);
     applyTheme(localStorage.getItem(THEME_KEY) ?? "navy");
     applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
-    updateAvatarControls();
     syncAvatarEditor();
     render();
+
+    localeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextLocale = button.dataset.localeOption;
+        if (!isLocale(nextLocale)) return;
+        applyLocale(nextLocale);
+        localStorage.setItem(LOCALE_KEY, nextLocale);
+      });
+    });
 
     themeButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -935,7 +1048,7 @@ const description =
     });
 
     document.getElementById("clear-editor")?.addEventListener("click", () => {
-      if (!confirm("編集内容をすべて消去しますか？")) return;
+      if (!confirm(message("clearConfirm"))) return;
       textarea.value = "";
       render();
       persist();
@@ -992,9 +1105,9 @@ const description =
       try {
         const nextAvatar = await optimizeAvatar(file);
         setAvatarEditorOpen(true, nextAvatar);
-        updateAvatarControls("保存待ち");
+        updateAvatarControls("avatarPending");
       } catch {
-        updateAvatarControls("アップロード失敗");
+        updateAvatarControls("avatarUploadFailed");
       }
     });
 
