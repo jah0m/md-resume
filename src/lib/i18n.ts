@@ -58,6 +58,10 @@ export const messages = {
     backgroundPaper: "ピュア・ホワイト",
     backgroundMist: "クール・ミスト",
     backgroundLinen: "ソフト・リネン",
+    pageMargins: "余白 {top}/{bottom} mm",
+    topMargin: "上",
+    bottomMargin: "下",
+    resetMargins: "初期値に戻す",
     savePdf: "PDFとして保存",
     aboutTitle: "このツールについて",
     aboutText:
@@ -145,6 +149,10 @@ export const messages = {
     backgroundPaper: "Pure white",
     backgroundMist: "Cool mist",
     backgroundLinen: "Soft linen",
+    pageMargins: "Margins {top}/{bottom} mm",
+    topMargin: "Top",
+    bottomMargin: "Bottom",
+    resetMargins: "Reset",
     savePdf: "Save as PDF",
     aboutTitle: "About this tool",
     aboutText:
@@ -232,6 +240,10 @@ export const messages = {
     backgroundPaper: "纯白",
     backgroundMist: "冷雾",
     backgroundLinen: "柔和亚麻",
+    pageMargins: "边距 {top}/{bottom} mm",
+    topMargin: "上",
+    bottomMargin: "下",
+    resetMargins: "恢复默认",
     savePdf: "导出 PDF",
     aboutTitle: "关于本工具",
     aboutText:

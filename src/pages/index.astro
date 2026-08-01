@@ -282,6 +282,26 @@ const description =
                   aria-pressed="false"></button>
               </div>
             </div>
+            <details class="page-margin-picker" id="page-margin-picker">
+              <summary id="page-margin-summary">余白 15/15 mm</summary>
+              <div class="page-margin-controls">
+                <label class="page-margin-control" for="page-margin-top">
+                  <span>
+                    <span data-i18n="topMargin">上</span>
+                    <output id="page-margin-top-value">15 mm</output>
+                  </span>
+                    <input id="page-margin-top" type="range" min="0" max="24" step="1" value="15" />
+                </label>
+                <label class="page-margin-control" for="page-margin-bottom">
+                  <span>
+                    <span data-i18n="bottomMargin">下</span>
+                    <output id="page-margin-bottom-value">15 mm</output>
+                  </span>
+                    <input id="page-margin-bottom" type="range" min="0" max="24" step="1" value="15" />
+                </label>
+                <button id="reset-page-margins" type="button" data-i18n="resetMargins">初期値に戻す</button>
+              </div>
+            </details>
             <button id="save-pdf" class="primary" data-i18n="savePdf">PDFとして保存</button>
           </div>
         </div>
@@ -362,6 +382,10 @@ const description =
     const STORAGE_KEY = "md-resume-content-v2";
     const THEME_KEY = "md-resume-theme";
     const BACKGROUND_KEY = "md-resume-background";
+    const PAGE_MARGINS_KEY = "md-resume-page-margins";
+    const DEFAULT_PAGE_MARGIN = 15;
+    const MIN_PAGE_MARGIN = 0;
+    const MAX_PAGE_MARGIN = 24;
     const AVATAR_KEY = "md-resume-avatar";
     const AVATAR_DEFAULT_DISMISSED_KEY = "md-resume-avatar-default-dismissed";
 
@@ -380,6 +404,24 @@ const description =
     ) as HTMLElement;
     const pages = document.getElementById("resume-pages") as HTMLElement;
     const pageCount = document.getElementById("page-count") as HTMLElement;
+    const pageMarginSummary = document.getElementById(
+      "page-margin-summary",
+    ) as HTMLElement;
+    const pageMarginTopInput = document.getElementById(
+      "page-margin-top",
+    ) as HTMLInputElement;
+    const pageMarginBottomInput = document.getElementById(
+      "page-margin-bottom",
+    ) as HTMLInputElement;
+    const pageMarginTopValue = document.getElementById(
+      "page-margin-top-value",
+    ) as HTMLOutputElement;
+    const pageMarginBottomValue = document.getElementById(
+      "page-margin-bottom-value",
+    ) as HTMLOutputElement;
+    const resetPageMarginsButton = document.getElementById(
+      "reset-page-margins",
+    ) as HTMLButtonElement;
     const copyAiPromptButton = document.getElementById(
       "copy-ai-prompt",
     ) as HTMLButtonElement;
@@ -479,6 +521,26 @@ const description =
     let avatarDraftShape: "square" | "circle" = avatarShape;
     let avatarDraftOffset = { ...avatarOffset };
 
+    const savedPageMargins = (() => {
+      try {
+        const parsed = JSON.parse(
+          localStorage.getItem(PAGE_MARGINS_KEY) ?? "{}",
+        );
+        return {
+          top: Number.isFinite(Number(parsed.top))
+            ? Number(parsed.top)
+            : DEFAULT_PAGE_MARGIN,
+          bottom: Number.isFinite(Number(parsed.bottom))
+            ? Number(parsed.bottom)
+            : DEFAULT_PAGE_MARGIN,
+        };
+      } catch {
+        return { top: DEFAULT_PAGE_MARGIN, bottom: DEFAULT_PAGE_MARGIN };
+      }
+    })();
+    let pageMarginTop = savedPageMargins.top;
+    let pageMarginBottom = savedPageMargins.bottom;
+
     function message(key: string) {
       return translate(currentLocale, key as MessageKey);
     }
@@ -528,6 +590,7 @@ const description =
         );
       });
       pageCount.textContent = formatPageCount(currentPageTotal);
+      updatePageMarginLabels();
       updateAvatarControls();
       document.documentElement.classList.remove("i18n-pending");
       document.documentElement.style.removeProperty("visibility");
@@ -584,6 +647,48 @@ const description =
 
     function formatPageCount(count: number) {
       return message("pageCount").replace("{count}", String(count));
+    }
+
+    function clampPageMargin(value: number) {
+      return Math.min(MAX_PAGE_MARGIN, Math.max(MIN_PAGE_MARGIN, value));
+    }
+
+    function updatePageMarginLabels() {
+      const top = `${pageMarginTop} mm`;
+      const bottom = `${pageMarginBottom} mm`;
+      pageMarginTopInput.value = String(pageMarginTop);
+      pageMarginBottomInput.value = String(pageMarginBottom);
+      pageMarginTopValue.textContent = top;
+      pageMarginBottomValue.textContent = bottom;
+      pageMarginSummary.textContent = message("pageMargins")
+        .replace("{top}", String(pageMarginTop))
+        .replace("{bottom}", String(pageMarginBottom));
+    }
+
+    function applyPageMargins(
+      top: number,
+      bottom: number,
+      persist = true,
+      rerender = true,
+    ) {
+      pageMarginTop = clampPageMargin(top);
+      pageMarginBottom = clampPageMargin(bottom);
+      preview.style.setProperty(
+        "--resume-padding-top",
+        `${pageMarginTop}mm`,
+      );
+      preview.style.setProperty(
+        "--resume-padding-bottom",
+        `${pageMarginBottom}mm`,
+      );
+      updatePageMarginLabels();
+      if (persist) {
+        localStorage.setItem(
+          PAGE_MARGINS_KEY,
+          JSON.stringify({ top: pageMarginTop, bottom: pageMarginBottom }),
+        );
+      }
+      if (rerender) render();
     }
 
     const spacerMirror = document.createElement("div");
@@ -1070,15 +1175,15 @@ const description =
         source.clientHeight -
         px(computed.paddingTop) -
         px(computed.paddingBottom);
+      const contentTop =
+        source.getBoundingClientRect().top + px(computed.paddingTop);
       const measuredChildren = Array.from(source.children).map((node) => {
         const child = node as HTMLElement;
-        const childStyle = getComputedStyle(child);
+        const rect = child.getBoundingClientRect();
         return {
           child,
-          height:
-            child.getBoundingClientRect().height +
-            px(childStyle.marginTop) +
-            px(childStyle.marginBottom),
+          top: rect.top - contentTop,
+          bottom: rect.bottom - contentTop,
         };
       });
 
@@ -1087,6 +1192,8 @@ const description =
       // never lands alone at the bottom of a page.
       const measuredBlocks: Array<{
         entries: typeof measuredChildren;
+        top: number;
+        bottom: number;
         height: number;
       }> = [];
 
@@ -1097,13 +1204,11 @@ const description =
           ? Number(current.child.tagName.slice(1))
           : 0;
         const entries = [current];
-        let height = current.height;
 
         const appendNext = () => {
           const next = measuredChildren[index + 1];
           if (!next) return false;
           entries.push(next);
-          height += next.height;
           index += 1;
           return true;
         };
@@ -1130,7 +1235,15 @@ const description =
           }
         }
 
-        measuredBlocks.push({ entries, height });
+        const firstEntry = entries[0];
+        const lastEntry = entries[entries.length - 1];
+        const height = Math.max(0, lastEntry.bottom - firstEntry.top);
+        measuredBlocks.push({
+          entries,
+          top: firstEntry.top,
+          bottom: lastEntry.bottom,
+          height,
+        });
       }
 
       pages.replaceChildren();
@@ -1138,6 +1251,7 @@ const description =
       let currentPage: HTMLElement | undefined;
       let usedHeight = 0;
       let totalPages = 0;
+      let previousBlock: (typeof measuredBlocks)[number] | undefined;
 
       const addPage = () => {
         const page = document.createElement("section");
@@ -1159,17 +1273,23 @@ const description =
       };
 
       for (const block of measuredBlocks) {
+        const gap = previousBlock
+          ? Math.max(0, block.top - previousBlock.bottom)
+          : 0;
         if (
           !currentPage ||
-          (usedHeight > 0 && usedHeight + block.height > contentHeight)
+          (usedHeight > 0 && usedHeight + gap + block.height > contentHeight)
         ) {
           addPage();
+          previousBlock = undefined;
         }
 
         for (const entry of block.entries) {
           currentPage?.appendChild(entry.child);
         }
+        usedHeight += previousBlock ? gap : 0;
         usedHeight += block.height;
+        previousBlock = block;
       }
 
       if (!measuredBlocks.length) addPage();
@@ -1267,6 +1387,7 @@ const description =
     applyLocale(currentLocale);
     applyTheme(localStorage.getItem(THEME_KEY) ?? "navy");
     applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
+    applyPageMargins(pageMarginTop, pageMarginBottom, false, false);
     syncAvatarEditor();
     render();
 
@@ -1293,6 +1414,16 @@ const description =
         applyBackground(nextBackground);
         localStorage.setItem(BACKGROUND_KEY, nextBackground);
       });
+    });
+
+    pageMarginTopInput.addEventListener("input", () => {
+      applyPageMargins(Number(pageMarginTopInput.value), pageMarginBottom);
+    });
+    pageMarginBottomInput.addEventListener("input", () => {
+      applyPageMargins(pageMarginTop, Number(pageMarginBottomInput.value));
+    });
+    resetPageMarginsButton.addEventListener("click", () => {
+      applyPageMargins(DEFAULT_PAGE_MARGIN, DEFAULT_PAGE_MARGIN);
     });
 
     document.getElementById("load-sample")?.addEventListener("click", () => {
