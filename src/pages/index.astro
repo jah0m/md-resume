@@ -170,7 +170,7 @@ const description =
               <div
                 class="avatar-crop-frame avatar-editor-crop-window"
                 id="avatar-editor-crop-window"
-                data-shape="square"
+                data-shape="circle"
               >
                 <img
                   id="avatar-editor-image"
@@ -203,12 +203,16 @@ const description =
                       type="radio"
                       name="avatar-shape"
                       value="square"
-                      checked
                     />
                     <span data-i18n="square">方形</span>
                   </label>
                   <label>
-                    <input type="radio" name="avatar-shape" value="circle" />
+                    <input
+                      type="radio"
+                      name="avatar-shape"
+                      value="circle"
+                      checked
+                    />
                     <span data-i18n="circle">円形</span>
                   </label>
                 </div>
@@ -588,6 +592,7 @@ const description =
       (localStorage.getItem(AVATAR_DEFAULT_DISMISSED_KEY) === "true"
         ? ""
         : "/demo-avatar.png");
+    const isDefaultAvatar = !storedAvatar && avatarDataUrl === "/demo-avatar.png";
     const AVATAR_SETTINGS_KEY = "md-resume-avatar-settings";
     const savedAvatarSettings = (() => {
       try {
@@ -598,12 +603,21 @@ const description =
           zoom: Number.isFinite(Number(parsed.zoom))
             ? Number(parsed.zoom)
             : 100,
-          shape: parsed.shape === "circle" ? "circle" : "square",
+          shape: isDefaultAvatar
+            ? "circle"
+            : parsed.shape === "circle"
+              ? "circle"
+              : "square",
           x: Number.isFinite(Number(parsed.x)) ? Number(parsed.x) : 0,
           y: Number.isFinite(Number(parsed.y)) ? Number(parsed.y) : 0,
         };
       } catch {
-        return { zoom: 100, shape: "square", x: 0, y: 0 };
+        return {
+          zoom: 100,
+          shape: isDefaultAvatar ? "circle" : "square",
+          x: 0,
+          y: 0,
+        };
       }
     })();
     let avatarZoom = Math.min(240, Math.max(100, savedAvatarSettings.zoom));
