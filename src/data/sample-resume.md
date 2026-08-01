@@ -3,7 +3,7 @@
 **山田 太郎
 Taro Yamada**
 
-Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/<your-name>) · [GitHub](https://github.com/<your-name>)
+Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/<your-name>) · [GitHub](https://github.com/<your-name>) · [Portfolio](https://portfolio.example.com)
 
 ## 職務要約
 
@@ -21,12 +21,12 @@ Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.
 
 ## テクニカルスキル
 
-| 区分           | スキル・テクノロジー                         |
+| 区分                 | スキル・技術                             |
 | -------------- | -------------------------------------------- |
-| 主軸・得意領域 | 〇〇, 〇〇, 〇〇, REST API, 〇〇             |
-| 実務経験あり   | △△, △△, 〇〇データベース, 〇〇クラウド       |
-| 開発手法・領域 | 要件定義, チーム開発, アジャイル, 〇〇自動化 |
-| 語学力         | 日本語（ビジネスレベル）、英語（〇〇点）     |
+| 主な強み・得意領域   | 〇〇, 〇〇, 〇〇, REST API, 〇〇             |
+| 実務経験             | △△, △△, 〇〇データベース, 〇〇クラウド       |
+| 開発工程・手法       | 要件定義, チーム開発, アジャイル, 〇〇自動化 |
+| 語学力               | 日本語（ビジネスレベル）、英語（〇〇点）     |
 
 ## 職務経歴
 

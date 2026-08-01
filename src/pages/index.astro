@@ -276,6 +276,12 @@ const description =
             お手持ちの履歴書をAIに渡し、「このサンプルの見出しと構成に合わせて整理して」と依頼することもできます。個人情報を含む内容を外部AIへ送信する場合は、利用するサービスの設定を確認してください。
           </li>
         </ol>
+        <div class="usage-contact-tip">
+          <strong>連絡先の書き方</strong>
+          <p>
+            名前の直後に1行で記述すると、タイトル下に表示されます。<strong>PhoneとEmail</strong>はテキスト、<strong>LinkedIn・GitHub・Portfolio・個人サイト・SNS</strong>などはMarkdownリンクにします。
+          </p>
+        </div>
         <h2>対応記法</h2>
         <p>
           見出し（# ##
@@ -283,7 +289,9 @@ const description =
         </p>
       </section>
     </div>
-    <footer class="site-footer">© Jahom</footer>
+    <footer class="site-footer">
+      <a href="https://github.com/jah0m" target="_blank" rel="noreferrer">© Jahom</a>
+    </footer>
   </div>
 
   <script type="text/plain" id="sample-resume-data" set:html={sampleResume} />
@@ -670,6 +678,10 @@ const description =
         return null;
       contactParagraph.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
         link.replaceWith(document.createTextNode(link.textContent ?? ""));
+      });
+      contactParagraph.querySelectorAll("a").forEach((link) => {
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noreferrer");
       });
       contactParagraph.classList.add("resume-contact-row");
       return contactParagraph as HTMLElement;

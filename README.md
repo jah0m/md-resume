@@ -17,10 +17,10 @@
 
 ## 連絡先を表示する
 
-名前の直後に、メールアドレスやプロフィールページを1行で記述すると、履歴書のタイトル下に連絡先として中央揃えで表示されます。Emailはテキストとして表示し、LinkedInやGitHubはMarkdownリンクとして設定できます。
+名前の直後に、メールアドレスやプロフィールページを1行で記述すると、履歴書のタイトル下に連絡先として中央揃えで表示されます。Emailはテキストとして表示し、LinkedIn、GitHub、Portfolio、個人サイト、SNSなどのURLはMarkdownリンクとして設定できます。
 
 ```md
-Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/your-name/) · [GitHub](https://github.com/your-name)
+Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/your-name/) · [GitHub](https://github.com/your-name) · [Portfolio](https://portfolio.example.com)
 ```
 
 ## AIで原稿を整える
