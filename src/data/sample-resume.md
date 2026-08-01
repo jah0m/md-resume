@@ -3,7 +3,7 @@
 **山田 太郎
 Taro Yamada**
 
-Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/your-name/) · [GitHub](https://github.com/your-name)
+Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.linkedin.com/in/<your-name>) · [GitHub](https://github.com/<your-name>)
 
 ## 職務要約
 
