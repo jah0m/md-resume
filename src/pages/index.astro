@@ -2,6 +2,21 @@
 import Layout from "../layouts/Layout.astro";
 import "../styles/resume.css";
 import sampleResume from "../data/sample-resume.md?raw";
+import { resumeFonts } from "../lib/fonts";
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/700.css";
+import "@fontsource/noto-serif-jp/400.css";
+import "@fontsource/noto-serif-jp/700.css";
+import "@fontsource/biz-udpgothic/400.css";
+import "@fontsource/biz-udpgothic/700.css";
+import "@fontsource/biz-udpmincho/400.css";
+import "@fontsource/biz-udpmincho/700.css";
+import "@fontsource/zen-kaku-gothic-new/400.css";
+import "@fontsource/zen-kaku-gothic-new/700.css";
+import "@fontsource/zen-maru-gothic/400.css";
+import "@fontsource/zen-maru-gothic/700.css";
+import "@fontsource/klee-one/400.css";
+import "@fontsource/klee-one/600.css";
 
 const title = "Markdown職務経歴書 PDF変換ツール｜無料・ブラウザで完結";
 const description =
@@ -67,8 +82,7 @@ const description =
               class="editor-outline-label"
               data-i18n="outlineTitle">Markdown構成</span
             >
-            <span id="editor-outline-count" class="editor-outline-count"
-              >0</span
+            <span id="editor-outline-count" class="editor-outline-count">0</span
             >
           </div>
           <div id="editor-outline-list" class="editor-outline-list"></div>
@@ -199,11 +213,7 @@ const description =
                 <legend data-i18n="displayShape">表示形状</legend>
                 <div class="avatar-shape-options">
                   <label>
-                    <input
-                      type="radio"
-                      name="avatar-shape"
-                      value="rectangle"
-                    />
+                    <input type="radio" name="avatar-shape" value="rectangle" />
                     <span data-i18n="rectangle">長方形</span>
                   </label>
                   <label>
@@ -264,9 +274,6 @@ const description =
               <span data-i18n="previewLabel">プレビュー</span>
               <span id="page-count">A4 / Professional</span>
             </div>
-            <p class="panel-title" data-i18n="previewTitle">
-              職務経歴書の仕上がり
-            </p>
           </div>
           <div class="preview-actions">
             <div
@@ -390,6 +397,22 @@ const description =
                 >
               </div>
             </details>
+            <div class="font-picker">
+              <label for="resume-font" data-i18n="fontLabel">PDFフォント</label>
+              <select
+                id="resume-font"
+                aria-describedby="font-license font-status"
+              >
+                {
+                  resumeFonts.map((font) => (
+                    <option value={font.id} data-i18n={`font_${font.id}`}>
+                      {font.family}
+                    </option>
+                  ))
+                }
+              </select>
+              <span id="font-status" role="status" aria-live="polite"></span>
+            </div>
             <button id="save-pdf" class="primary" data-i18n="savePdf"
               >PDFとして保存</button
             >
@@ -456,6 +479,15 @@ const description =
           </p>
           <code class="usage-spacer-code">&lt;!-- spacer --&gt;</code>
         </div>
+        <div class="usage-font-license">
+          <a
+            id="font-license"
+            href="/font-licenses.txt"
+            target="_blank"
+            rel="noopener"
+            data-i18n="fontLicense">使用フォントとライセンス（SIL OFL 1.1）</a
+          >
+        </div>
         <footer class="site-footer">
           <a href="https://github.com/jah0m" target="_blank" rel="noreferrer"
             >© Jahom</a
@@ -472,6 +504,7 @@ const description =
     import avatar256 from "../assets/demo-avatar-256.webp?url";
     import avatar512 from "../assets/demo-avatar-512.webp?url";
     import { renderMarkdown } from "../lib/markdown";
+    import { resolveResumeFont, resumeFontStack } from "../lib/fonts";
     import {
       getInitialLocale,
       isLocale,
@@ -482,6 +515,12 @@ const description =
     } from "../lib/i18n";
 
     const STORAGE_KEY = "md-resume-content-v2";
+    const FONT_KEY = "md-resume-font";
+    const fontSelect = document.getElementById(
+      "resume-font",
+    ) as HTMLSelectElement;
+    const fontStatus = document.getElementById("font-status") as HTMLElement;
+    let pendingRender: Promise<boolean> = Promise.resolve(false);
     const THEME_KEY = "md-resume-theme";
     const BACKGROUND_KEY = "md-resume-background";
     const PAGE_MARGINS_KEY = "md-resume-page-margins";
@@ -713,8 +752,25 @@ const description =
       updatePageMarginLabels();
       updateAvatarControls();
       updateEditorOutline();
+      updateFontStatus(preview.dataset.fontStatus ?? "ready");
       document.documentElement.classList.remove("i18n-pending");
       document.documentElement.style.removeProperty("visibility");
+    }
+
+    function updateFontStatus(status: string) {
+      preview.dataset.fontStatus = status;
+      fontStatus.textContent =
+        status === "loading"
+          ? message("fontLoading")
+          : status === "error"
+            ? message("fontError")
+            : "";
+    }
+
+    function applyFont(id: string) {
+      const font = resolveResumeFont(id);
+      fontSelect.value = font.id;
+      preview.style.setProperty("--resume-font", resumeFontStack(font.id));
     }
 
     function applyTheme(theme: string) {
@@ -1160,26 +1216,14 @@ const description =
         "--avatar-zoom",
         String(avatarDraftZoom / 100),
       );
-      avatarEditorCropWindow.style.setProperty(
-        "--avatar-offset-x",
-        offsetX,
-      );
-      avatarEditorCropWindow.style.setProperty(
-        "--avatar-offset-y",
-        offsetY,
-      );
+      avatarEditorCropWindow.style.setProperty("--avatar-offset-x", offsetX);
+      avatarEditorCropWindow.style.setProperty("--avatar-offset-y", offsetY);
       avatarEditorSourceImage.style.setProperty(
         "--avatar-source-zoom",
         String((avatarDraftZoom / 100) * sourceScaleRatio),
       );
-      avatarEditorSourceImage.style.setProperty(
-        "--avatar-offset-x",
-        offsetX,
-      );
-      avatarEditorSourceImage.style.setProperty(
-        "--avatar-offset-y",
-        offsetY,
-      );
+      avatarEditorSourceImage.style.setProperty("--avatar-offset-x", offsetX);
+      avatarEditorSourceImage.style.setProperty("--avatar-offset-y", offsetY);
       avatarZoomInput.value = String(avatarDraftZoom);
       avatarZoomValue.value = `${avatarDraftZoom}%`;
       avatarShapeInputs.forEach((input) => {
@@ -1439,7 +1483,7 @@ const description =
         if (avatarDataUrl === avatar512) {
           avatar.srcset = `${avatar128} 128w, ${avatar256} 256w, ${avatar512} 512w`;
           // Include crop zoom so enlarged photos retain enough detail.
-          avatar.sizes = `${Math.ceil(114 * avatarZoom / 100)}px`;
+          avatar.sizes = `${Math.ceil((114 * avatarZoom) / 100)}px`;
         }
         avatar.width = 512;
         avatar.height = 512;
@@ -1616,24 +1660,29 @@ const description =
         pages.querySelectorAll<HTMLElement>(".resume-page-frame"),
         (frame) => {
           const page = frame.firstElementChild as HTMLElement | null;
-          return { frame, page, width: page?.offsetWidth ?? 0, height: page?.offsetHeight ?? 0 };
+          return {
+            frame,
+            page,
+            width: page?.offsetWidth ?? 0,
+            height: page?.offsetHeight ?? 0,
+          };
         },
       );
       measurements.forEach(({ frame, page, width, height }) => {
-          if (!page) return;
+        if (!page) return;
 
-          if (scale < 1) {
-            frame.style.width = `${width * scale}px`;
-            frame.style.height = `${height * scale}px`;
-            page.style.transform = `scale(${scale})`;
-            page.style.transformOrigin = "top left";
-          } else {
-            frame.style.removeProperty("width");
-            frame.style.removeProperty("height");
-            page.style.removeProperty("transform");
-            page.style.removeProperty("transform-origin");
-          }
-        });
+        if (scale < 1) {
+          frame.style.width = `${width * scale}px`;
+          frame.style.height = `${height * scale}px`;
+          page.style.transform = `scale(${scale})`;
+          page.style.transformOrigin = "top left";
+        } else {
+          frame.style.removeProperty("width");
+          frame.style.removeProperty("height");
+          page.style.removeProperty("transform");
+          page.style.removeProperty("transform-origin");
+        }
+      });
     }
 
     function render() {
@@ -1649,7 +1698,33 @@ const description =
       decorateAvatar(source);
       pages.replaceChildren(source);
 
-      requestAnimationFrame(() => paginate(source, token));
+      updateFontStatus("loading");
+      const stack = resumeFontStack(fontSelect.value);
+      const text = source.textContent || "Aa 日本語 中文";
+      // Explicitly load both weights and the glyph subsets before measuring pages.
+      pendingRender = (async () => {
+        try {
+          await Promise.all(
+            [400, 700].map((weight) =>
+              document.fonts.load(`${weight} 16px ${stack}`, text),
+            ),
+          );
+          await document.fonts.ready;
+          await new Promise<void>((resolve) =>
+            requestAnimationFrame(() => resolve()),
+          );
+          if (token !== renderToken) return false;
+          paginate(source, token);
+          updateFontStatus("ready");
+          return true;
+        } catch {
+          if (token === renderToken) {
+            paginate(source, token);
+            updateFontStatus("error");
+          }
+          return false;
+        }
+      })();
     }
 
     const previewResizeObserver = new ResizeObserver(syncPreviewPageScale);
@@ -1680,6 +1755,7 @@ const description =
     textarea.value = saved && saved.trim().length > 0 ? saved : sampleText;
     applyLocale(currentLocale);
     applyTheme(localStorage.getItem(THEME_KEY) ?? "navy");
+    applyFont(localStorage.getItem(FONT_KEY) ?? "noto-sans-jp");
     applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
     applyPageMargins(pageMarginTop, pageMarginBottom, false, false);
     syncAvatarEditor();
@@ -1692,6 +1768,12 @@ const description =
         applyLocale(nextLocale);
         localStorage.setItem(LOCALE_KEY, nextLocale);
       });
+    });
+
+    fontSelect.addEventListener("change", () => {
+      applyFont(fontSelect.value);
+      localStorage.setItem(FONT_KEY, fontSelect.value);
+      render();
     });
 
     themeButtons.forEach((button) => {
@@ -1736,8 +1818,32 @@ const description =
       persist();
     });
 
-    document.getElementById("save-pdf")?.addEventListener("click", () => {
-      window.print();
+    let printing = false;
+    async function savePdf() {
+      if (printing) return;
+      printing = true;
+      try {
+        clearTimeout(debounceTimer);
+        persist();
+        render();
+        let latest: Promise<boolean>;
+        let ready: boolean;
+        do {
+          latest = pendingRender;
+          ready = await latest;
+        } while (latest !== pendingRender);
+        if (ready) window.print();
+        else alert(message("fontError"));
+      } finally {
+        printing = false;
+      }
+    }
+    document.getElementById("save-pdf")?.addEventListener("click", savePdf);
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "p") {
+        event.preventDefault();
+        void savePdf();
+      }
     });
 
     copyAiPromptButton.addEventListener("click", async () => {

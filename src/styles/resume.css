@@ -274,6 +274,51 @@
   white-space: nowrap;
 }
 
+.font-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-width: 100%;
+  color: #526573;
+  font-size: 0.7rem;
+}
+
+.preview-actions .font-picker label {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: inherit;
+}
+
+.font-picker select {
+  min-height: 2rem;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid #bbcbd5;
+  border-radius: 6px;
+  background: #fff;
+  color: #263f53;
+  font: inherit;
+}
+
+.font-picker select:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+.usage-font-license {
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.usage-font-license a { color: #526573; }
+#font-status:empty { display: none; }
+#font-status { flex-basis: 100%; }
+
 .page-margin-picker > summary {
   display: inline-flex;
   align-items: center;
@@ -319,11 +364,23 @@
   box-shadow: 0 12px 28px rgba(17, 39, 57, 0.16);
 }
 
-.page-margin-control {
+.preview-actions .page-margin-control {
   display: grid;
   gap: 0.35rem;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   font-size: 0.7rem;
   font-weight: 700;
+}
+
+.preview-actions .page-margin-control:hover {
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
 }
 
 .page-margin-control > span {
@@ -531,6 +588,53 @@
   gap: 1rem;
   min-height: 3rem;
   margin-bottom: 0.9rem;
+}
+
+/* The controls wrap independently; the header must retain its full height
+   when the preview pane is a height-constrained flex column. */
+@media screen {
+.preview-pane > .panel-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 0 0 auto;
+  gap: 0.65rem;
+}
+
+.preview-pane > .panel-heading > :first-child {
+  min-width: 0;
+}
+
+.preview-pane .preview-actions {
+  justify-content: flex-start;
+  margin-top: 0;
+  column-gap: 0.4rem;
+}
+
+.preview-actions .theme-dots {
+  gap: 0.5rem;
+}
+
+.preview-actions .font-picker select {
+  width: 11rem;
+}
+
+.preview-actions .font-picker label,
+.preview-actions > button {
+  white-space: nowrap;
+}
+
+.preview-actions button.primary {
+  padding-inline: 0.65rem;
+}
+
+.preview-pane .pane-label {
+  gap: 1rem;
+}
+
+.preview-pane .pane-label > span {
+  white-space: nowrap;
+}
 }
 
 .panel-title {
@@ -1162,7 +1266,7 @@
   min-height: 0;
   overflow: visible;
   color: var(--resume-ink);
-  font-family: 'BIZ UDPGothic', 'Yu Gothic', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  font-family: var(--resume-font, 'Noto Sans JP'), sans-serif;
   font-size: 9.65pt;
   font-feature-settings: 'palt' 1;
   font-kerning: normal;
@@ -1472,7 +1576,7 @@
   margin: 1.5mm 0 6mm;
   padding: 0 0 3.2mm 0.28em;
   color: var(--resume-title);
-  font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'BIZ UDPMincho', serif;
+  font-family: inherit;
   font-size: 20pt;
   font-weight: 700;
   line-height: 1.25;
