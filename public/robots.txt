@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://md-resume.pages.dev/sitemap-index.xml
