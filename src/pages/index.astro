@@ -468,6 +468,9 @@ const description =
   <script type="text/plain" id="sample-resume-data" set:html={sampleResume} />
 
   <script>
+    import avatar128 from "../assets/demo-avatar-128.webp?url&no-inline";
+    import avatar256 from "../assets/demo-avatar-256.webp?url";
+    import avatar512 from "../assets/demo-avatar-512.webp?url";
     import { renderMarkdown } from "../lib/markdown";
     import {
       getInitialLocale,
@@ -591,8 +594,10 @@ const description =
       storedAvatar ??
       (localStorage.getItem(AVATAR_DEFAULT_DISMISSED_KEY) === "true"
         ? ""
-        : "/demo-avatar.png");
-    const isDefaultAvatar = !storedAvatar && avatarDataUrl === "/demo-avatar.png";
+        : avatar512);
+    // Migrate the default URL saved by older versions after editing its crop.
+    if (avatarDataUrl === "/demo-avatar.png") avatarDataUrl = avatar512;
+    const isDefaultAvatar = !storedAvatar && avatarDataUrl === avatar512;
     const AVATAR_SETTINGS_KEY = "md-resume-avatar-settings";
     const savedAvatarSettings = (() => {
       try {
@@ -1114,6 +1119,7 @@ const description =
     }
 
     function syncAvatarEditor() {
+      if (!avatarEditor.open) return;
       avatarEditorCropWindow.dataset.shape = avatarDraftShape;
       const cropImageWidth = avatarEditorImage.clientWidth;
       const cropImageHeight = avatarEditorImage.clientHeight;
@@ -1430,6 +1436,14 @@ const description =
         const avatar = document.createElement("img");
         avatar.className = "resume-avatar";
         avatar.src = avatarDataUrl;
+        if (avatarDataUrl === avatar512) {
+          avatar.srcset = `${avatar128} 128w, ${avatar256} 256w, ${avatar512} 512w`;
+          // Include crop zoom so enlarged photos retain enough detail.
+          avatar.sizes = `${Math.ceil(114 * avatarZoom / 100)}px`;
+        }
+        avatar.width = 512;
+        avatar.height = 512;
+        avatar.decoding = "async";
         avatar.alt = message("resumePhotoAlt");
         avatarFrame.append(avatar);
         metaRow.append(metaParagraph, avatarFrame);
@@ -1597,15 +1611,20 @@ const description =
         ? Math.min(1, availableWidth / firstPage.offsetWidth)
         : 1;
 
-      pages
-        .querySelectorAll<HTMLElement>(".resume-page-frame")
-        .forEach((frame) => {
+      // Complete all geometry reads before changing any frame's styles.
+      const measurements = Array.from(
+        pages.querySelectorAll<HTMLElement>(".resume-page-frame"),
+        (frame) => {
           const page = frame.firstElementChild as HTMLElement | null;
+          return { frame, page, width: page?.offsetWidth ?? 0, height: page?.offsetHeight ?? 0 };
+        },
+      );
+      measurements.forEach(({ frame, page, width, height }) => {
           if (!page) return;
 
           if (scale < 1) {
-            frame.style.width = `${page.offsetWidth * scale}px`;
-            frame.style.height = `${page.offsetHeight * scale}px`;
+            frame.style.width = `${width * scale}px`;
+            frame.style.height = `${height * scale}px`;
             page.style.transform = `scale(${scale})`;
             page.style.transformOrigin = "top left";
           } else {

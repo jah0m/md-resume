@@ -5,4 +5,5 @@ export default defineConfig({
   site: 'https://md-resume.jahom.dev',
   integrations: [sitemap()],
   output: 'static',
+  build: { inlineStylesheets: 'always' },
 });
