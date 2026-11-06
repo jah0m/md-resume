@@ -4,6 +4,7 @@ import avatar512 from "../assets/demo-avatar-512.webp?url";
 import { renderMarkdown } from "./markdown";
 import { resolveResumeFont, resumeFontStack } from "./fonts";
 import { loadResumeFont } from "./font-loader";
+import { printDocument } from "./print-document";
 import {
   getInitialLocale,
   isLocale,
@@ -129,6 +130,11 @@ export function initCareerEditor() {
     "sample-resume-data",
   ) as HTMLScriptElement;
   const sampleText = sampleData.textContent ?? "";
+  const sampleIdentityLine =
+    sampleText.split(/\r?\n/).find((line) => line.startsWith("**")) ?? "";
+  const overflowWarning = document.getElementById(
+    "content-overflow-warning",
+  ) as HTMLElement;
   const storedAvatar = localStorage.getItem(AVATAR_KEY);
   let avatarDataUrl =
     storedAvatar ??
@@ -651,16 +657,28 @@ export function initCareerEditor() {
   window.addEventListener("resize", updateSpacerTrigger);
   new ResizeObserver(updateSpacerTrigger).observe(textarea);
 
+  // The demo portrait belongs to the sample, so it must never carry over into
+  // a resume once the sample's name has been replaced.
+  function displayedAvatar() {
+    const isDemoAvatar = avatarDataUrl === avatar512;
+    const isSampleContent =
+      sampleIdentityLine !== "" && textarea.value.includes(sampleIdentityLine);
+    return isDemoAvatar && !isSampleContent ? "" : avatarDataUrl;
+  }
+
   function updateAvatarControls(
     statusKey?: "avatarPending" | "avatarUploadFailed",
   ) {
+    const avatar = displayedAvatar();
     avatarStatus.textContent = statusKey
       ? message(statusKey)
-      : avatarDataUrl
-        ? message("avatarSet")
-        : message("avatarUnset");
-    editAvatarButton.disabled = !avatarDataUrl;
-    clearAvatarButton.disabled = !avatarDataUrl;
+      : !avatar
+        ? message("avatarUnset")
+        : avatar === avatar512
+          ? message("avatarSample")
+          : message("avatarSet");
+    editAvatarButton.disabled = !avatar;
+    clearAvatarButton.disabled = !avatar;
   }
 
   function persistAvatarSettings() {
@@ -936,7 +954,8 @@ export function initCareerEditor() {
     const contactRow = headingIdentity
       ? decorateContactRow(metaParagraph)
       : null;
-    if (!avatarDataUrl && !contactRow) return;
+    const avatarToShow = displayedAvatar();
+    if (!avatarToShow && !contactRow) return;
 
     const coverHeader = document.createElement("div");
     coverHeader.className = "resume-cover-header";
@@ -960,7 +979,7 @@ export function initCareerEditor() {
     coverHeader.append(titleHeading);
     if (contactRow) coverHeader.append(contactRow);
 
-    if (avatarDataUrl) {
+    if (avatarToShow) {
       const metaRow = document.createElement("div");
       metaRow.className = "resume-cover-meta";
       const avatarFrame = document.createElement("div");
@@ -980,8 +999,8 @@ export function initCareerEditor() {
       );
       const avatar = document.createElement("img");
       avatar.className = "resume-avatar";
-      avatar.src = avatarDataUrl;
-      if (avatarDataUrl === avatar512) {
+      avatar.src = avatarToShow;
+      if (avatarToShow === avatar512) {
         avatar.srcset = `${avatar128} 128w, ${avatar256} 256w, ${avatar512} 512w`;
         // Include crop zoom so enlarged photos retain enough detail.
         avatar.sizes = `${Math.ceil((114 * avatarZoom) / 100)}px`;
@@ -1008,25 +1027,35 @@ export function initCareerEditor() {
       px(computed.paddingBottom);
     const contentTop =
       source.getBoundingClientRect().top + px(computed.paddingTop);
-    const measuredChildren = Array.from(source.children).map((node) => {
-      const child = node as HTMLElement;
-      const rect = child.getBoundingClientRect();
-      return {
-        child,
-        top: rect.top - contentTop,
-        bottom: rect.bottom - contentTop,
-      };
-    });
+    type MeasuredItem = { element: HTMLElement; top: number; bottom: number };
+    type MeasuredEntry = {
+      child: HTMLElement;
+      top: number;
+      bottom: number;
+      items?: MeasuredItem[];
+    };
+    const measuredChildren: MeasuredEntry[] = Array.from(source.children).map(
+      (node) => {
+        const child = node as HTMLElement;
+        const rect = child.getBoundingClientRect();
+        return {
+          child,
+          top: rect.top - contentTop,
+          bottom: rect.bottom - contentTop,
+        };
+      },
+    );
 
     // Keep headings with the beginning of their section. Major H2 sections
     // also keep the first H3 and its metadata together, so a section title
     // never lands alone at the bottom of a page.
-    const measuredBlocks: Array<{
-      entries: typeof measuredChildren;
+    type MeasuredBlock = {
+      entries: MeasuredEntry[];
       top: number;
       bottom: number;
       height: number;
-    }> = [];
+    };
+    const measuredBlocks: MeasuredBlock[] = [];
 
     for (let index = 0; index < measuredChildren.length; index += 1) {
       const current = measuredChildren[index];
@@ -1077,12 +1106,30 @@ export function initCareerEditor() {
       });
     }
 
+    // Item geometry is only valid while the source is intact, so capture it for
+    // anything that may need splitting before content moves onto pages.
+    for (const block of measuredBlocks) {
+      if (block.height <= contentHeight) continue;
+      for (const entry of block.entries) {
+        const elements = splittableItems(entry.child);
+        if (elements.length < 2) continue;
+        entry.items = elements.map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            element,
+            top: rect.top - contentTop,
+            bottom: rect.bottom - contentTop,
+          };
+        });
+      }
+    }
+
     pages.replaceChildren();
 
     let currentPage: HTMLElement | undefined;
     let usedHeight = 0;
     let totalPages = 0;
-    let previousBlock: (typeof measuredBlocks)[number] | undefined;
+    let previousBlock: { bottom: number } | undefined;
 
     const addPage = () => {
       const page = document.createElement("section");
@@ -1100,7 +1147,75 @@ export function initCareerEditor() {
       totalPages += 1;
     };
 
-    for (const block of measuredBlocks) {
+    // Lead-in headings stay with the first items, then the list or table
+    // continues across as many pages as it needs.
+    const placeSplitBlock = (block: MeasuredBlock, splitIndex: number) => {
+      const entry = block.entries[splitIndex];
+      const items = entry.items!;
+      const leadEntries = block.entries.slice(0, splitIndex);
+      const tailEntries = block.entries.slice(splitIndex + 1);
+      const leadHeight = entry.top - block.top;
+      const itemOffset = items[0].top - entry.top;
+      const closingHeight = entry.bottom - items[items.length - 1].bottom;
+      const firstItemHeight = items[0].bottom - items[0].top;
+      const gap = previousBlock
+        ? Math.max(0, block.top - previousBlock.bottom)
+        : 0;
+
+      if (
+        !currentPage ||
+        (usedHeight > 0 &&
+          usedHeight + gap + leadHeight + itemOffset + firstItemHeight >
+            contentHeight)
+      ) {
+        addPage();
+      } else {
+        usedHeight += gap;
+      }
+      for (const lead of leadEntries) currentPage?.appendChild(lead.child);
+      usedHeight += leadHeight;
+
+      let start = 0;
+      while (start < items.length) {
+        const available = contentHeight - usedHeight;
+        const heightThrough = (index: number) =>
+          itemOffset +
+          items[index].bottom -
+          items[start].top +
+          (index === items.length - 1 ? closingHeight : 0);
+        let end = start;
+        while (
+          end + 1 < items.length &&
+          heightThrough(end + 1) <= available
+        ) {
+          end += 1;
+        }
+        currentPage?.appendChild(
+          createSplitPart(entry.child, items.slice(start, end + 1), start),
+        );
+        usedHeight += heightThrough(end);
+        start = end + 1;
+        if (start < items.length) addPage();
+      }
+      previousBlock = { bottom: entry.bottom };
+
+      if (tailEntries.length) {
+        const top = tailEntries[0].top;
+        const bottom = tailEntries[tailEntries.length - 1].bottom;
+        placeBlock({ entries: tailEntries, top, bottom, height: bottom - top });
+      }
+    };
+
+    const placeBlock = (block: MeasuredBlock) => {
+      const splitIndex =
+        block.height > contentHeight
+          ? block.entries.findIndex((entry) => entry.items)
+          : -1;
+      if (splitIndex >= 0) {
+        placeSplitBlock(block, splitIndex);
+        return;
+      }
+
       const gap = previousBlock
         ? Math.max(0, block.top - previousBlock.bottom)
         : 0;
@@ -1118,7 +1233,9 @@ export function initCareerEditor() {
       usedHeight += previousBlock ? gap : 0;
       usedHeight += block.height;
       previousBlock = block;
-    }
+    };
+
+    measuredBlocks.forEach(placeBlock);
 
     if (!measuredBlocks.length) addPage();
 
@@ -1136,7 +1253,51 @@ export function initCareerEditor() {
     }
     currentPageTotal = totalPages || 1;
     pageCount.textContent = formatPageCount(currentPageTotal);
+    // A single paragraph or list item can still be taller than a page; pages
+    // clip their overflow, so tell the author rather than losing text silently.
+    overflowWarning.hidden = !hasClippedContent();
     syncPreviewPageScale();
+  }
+
+  function hasClippedContent() {
+    return Array.from(
+      pages.querySelectorAll<HTMLElement>(".resume-page-frame > .resume-page"),
+    ).some((page) => {
+      const paperBottom = page.getBoundingClientRect().bottom;
+      return Array.from(page.children).some(
+        (child) =>
+          child.tagName !== "TIME" &&
+          child.getBoundingClientRect().bottom > paperBottom + 1,
+      );
+    });
+  }
+
+  function splittableItems(element: HTMLElement) {
+    if (element instanceof HTMLTableElement) {
+      return Array.from(element.tBodies[0]?.rows ?? []) as HTMLElement[];
+    }
+    return element instanceof HTMLUListElement ||
+      element instanceof HTMLOListElement
+      ? (Array.from(element.children) as HTMLElement[])
+      : [];
+  }
+
+  function createSplitPart(
+    original: HTMLElement,
+    items: Array<{ element: HTMLElement }>,
+    startIndex: number,
+  ) {
+    const part = original.cloneNode(false) as HTMLElement;
+    let container = part;
+    if (original instanceof HTMLTableElement) {
+      if (original.tHead) part.append(original.tHead.cloneNode(true));
+      container = document.createElement("tbody");
+      part.append(container);
+    } else if (original instanceof HTMLOListElement) {
+      part.setAttribute("start", String(original.start + startIndex));
+    }
+    items.forEach((item) => container.append(item.element));
+    return part;
   }
 
   function syncPreviewPageScale() {
@@ -1153,9 +1314,8 @@ export function initCareerEditor() {
         px(scrollStyle.paddingLeft) -
         px(scrollStyle.paddingRight),
     );
-    const scale = window.matchMedia("(max-width: 1400px)").matches
-      ? Math.min(1, availableWidth / firstPage.offsetWidth)
-      : 1;
+    if (availableWidth === 0) return;
+    const scale = Math.min(1, availableWidth / firstPage.offsetWidth);
 
     // Complete all geometry reads before changing any frame's styles.
     const measurements = Array.from(
@@ -1200,7 +1360,11 @@ export function initCareerEditor() {
         heading.dataset.outlineIndex = String(index);
       });
     decorateAvatar(source);
-    pages.replaceChildren(source);
+    updateAvatarControls();
+    // Keep the current pages on screen until the new layout is ready, otherwise
+    // the preview blanks whenever a new glyph subset has to load.
+    pages.querySelector(":scope > .resume-page-measure")?.remove();
+    pages.append(source);
 
     updateFontStatus("loading");
     const stack = resumeFontStack(fontSelect.value);
@@ -1332,11 +1496,23 @@ export function initCareerEditor() {
         ready = await latest;
       } while (latest !== pendingRender);
       if (root.hidden) return;
-      if (ready) window.print();
+      if (ready) printDocument(pdfTitle());
       else alert(message("fontError"));
     } finally {
       printing = false;
     }
+  }
+
+  function pdfTitle() {
+    const documentName =
+      pages.querySelector("h1")?.textContent?.trim() ||
+      message("careerDocument");
+    const authorName = pages
+      .querySelector(".resume-heading-identity")
+      ?.textContent?.trim()
+      .split(/\r?\n/)[0]
+      ?.trim();
+    return authorName ? `${documentName}_${authorName}` : documentName;
   }
   document.getElementById("save-pdf")?.addEventListener("click", savePdf);
 
@@ -1406,6 +1582,14 @@ export function initCareerEditor() {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
+      const current = textarea.value.trim();
+      if (
+        current &&
+        current !== sampleText.trim() &&
+        !confirm(message("openFileConfirm"))
+      ) {
+        return;
+      }
       textarea.value = String(reader.result ?? "");
       updateEditorOutline();
       render();

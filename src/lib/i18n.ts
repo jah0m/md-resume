@@ -22,6 +22,11 @@ export const messages = {
     editorInput: "Markdown入力",
     loadSample: "サンプル",
     loadSampleConfirm: "現在の編集内容は失われます。サンプルを読み込みますか？",
+    openFileConfirm: "現在の編集内容は失われます。このファイルを開きますか？",
+    viewSwitchLabel: "表示の切り替え",
+    viewEdit: "編集",
+    viewPreview: "プレビュー",
+    contentOverflow: "1ページに収まらない段落や項目があり、はみ出した部分はPDFに出力されません。分割してください。",
     downloadSample: "サンプルを保存",
     openMd: ".mdを開く",
     saveMd: ".md保存",
@@ -29,6 +34,7 @@ export const messages = {
     profilePhoto: "プロフィール写真",
     avatarUnset: "未設定",
     avatarSet: "設定済み",
+    avatarSample: "サンプル画像",
     avatarPending: "保存待ち",
     avatarUploadFailed: "アップロード失敗",
     uploadImage: "画像をアップロード",
@@ -84,7 +90,7 @@ export const messages = {
     howToStep1:
       "サンプルを読むか、.mdファイルを開きます。",
     howToStep2:
-      "左のMarkdownを編集すると、右のプレビューに反映されます。",
+      "Markdownを編集すると、プレビューに反映されます。",
     howToStep3:
       "「PDFとして保存」を押し、印刷ダイアログで「PDFに保存」を選びます。",
     howToStep4:
@@ -128,6 +134,11 @@ export const messages = {
     editorInput: "Markdown input",
     loadSample: "Load sample",
     loadSampleConfirm: "Your current edits will be replaced. Load the sample?",
+    openFileConfirm: "Your current edits will be replaced. Open this file?",
+    viewSwitchLabel: "Switch view",
+    viewEdit: "Edit",
+    viewPreview: "Preview",
+    contentOverflow: "A paragraph or list item is too long for one page, and the part that overflows won't appear in the PDF. Please split it.",
     downloadSample: "Download sample",
     openMd: "Open .md file",
     saveMd: "Save .md",
@@ -135,6 +146,7 @@ export const messages = {
     profilePhoto: "Profile photo",
     avatarUnset: "Not set",
     avatarSet: "Set",
+    avatarSample: "Sample image",
     avatarPending: "Unsaved changes",
     avatarUploadFailed: "Upload failed",
     uploadImage: "Upload image",
@@ -190,7 +202,7 @@ export const messages = {
     howToStep1:
       "Load the sample or open your own .md file.",
     howToStep2:
-      "Edit Markdown on the left and see the preview update on the right.",
+      "Edit the Markdown and the preview updates as you type.",
     howToStep3:
       "Select Save as PDF, then choose Save to PDF in the print dialog.",
     howToStep4:
@@ -234,6 +246,11 @@ export const messages = {
     editorInput: "Markdown 输入",
     loadSample: "加载示例",
     loadSampleConfirm: "当前编辑内容将被替换。确定要加载示例吗？",
+    openFileConfirm: "当前编辑内容将被替换。确定要打开这个文件吗？",
+    viewSwitchLabel: "切换视图",
+    viewEdit: "编辑",
+    viewPreview: "预览",
+    contentOverflow: "有段落或列表项超过一页，超出部分不会出现在 PDF 中，请拆分后再导出。",
     downloadSample: "下载示例",
     openMd: "打开 .md 文件",
     saveMd: "保存 .md",
@@ -241,6 +258,7 @@ export const messages = {
     profilePhoto: "个人头像",
     avatarUnset: "未设置",
     avatarSet: "已设置",
+    avatarSample: "示例图片",
     avatarPending: "待保存",
     avatarUploadFailed: "上传失败",
     uploadImage: "上传图片",
@@ -294,7 +312,7 @@ export const messages = {
       "用 Markdown 制作履历书，并在浏览器内直接转换为 A4 PDF。",
     howToTitle: "使用方法",
     howToStep1: "加载示例，或打开自己的 .md 文件。",
-    howToStep2: "编辑左侧 Markdown，右侧预览会同步更新。",
+    howToStep2: "编辑 Markdown，预览会同步更新。",
     howToStep3: "点击“导出 PDF”，在打印对话框中选择“保存为 PDF”。",
     howToStep4:
       "也可以把示例和自己的履历书一起交给 AI，请它按照示例的标题和结构整理内容。向外部 AI 服务发送个人信息前，请先确认该服务的隐私设置。",
