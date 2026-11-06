@@ -270,15 +270,15 @@ export function initRirekishoEditor() {
     }
     const historyRows: Entry[] = [];
     for (const group of ["education", "employment"] as const) {
-      const entries = draft[group].filter(row => row.text.trim() || row.year.trim() || row.month.trim());
-      if (!entries.length) continue;
+      const entries = draft[group];
+      if (!entries.some(row => row.text.trim() || row.year.trim() || row.month.trim())) continue;
       historyRows.push({ year: "", month: "", text: group === "education" ? "学歴" : "職歴", heading: true });
       historyRows.push(...entries);
     }
     if (draft.employment.some(row => row.text.trim() || row.year.trim() || row.month.trim())) historyRows.push({ year: "", month: "", text: "以上" });
     const hasEmployment = draft.employment.some(row => row.text.trim() || row.year.trim() || row.month.trim());
     history(hasEmployment ? "学歴・職歴（各別にまとめて書く）" : "学歴", historyRows, 10);
-    const qualifications = draft.qualifications.filter(row => row.text.trim() || row.year.trim() || row.month.trim());
+    const qualifications = draft.qualifications.some(row => row.text.trim() || row.year.trim() || row.month.trim()) ? draft.qualifications : [];
     const visibleSections = draft.sections;
     if (qualifications.length || visibleSections.length) newPage();
     if (qualifications.length) history("免許・資格", qualifications, 6);

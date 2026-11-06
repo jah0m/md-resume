@@ -11,7 +11,7 @@ const path = require('node:path');
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('dialog', dialog => dialog.accept());
-  await page.goto('http://127.0.0.1:4322/#rirekisho');
+  await page.goto((process.env.TEST_BASE_URL || 'http://127.0.0.1:4322') + '/#rirekisho');
   await page.locator('.r-sheet').first().waitFor();
   const row = (prefix, index, long = false) => ({year: String(1970 + index), month: String(index % 12 + 1), text: `${prefix}${String(index + 1).padStart(2,'0')} ` + (long ? '学校名や会社名、所属部署と担当業務についての詳しい説明です。'.repeat(6) : '入学・卒業または入社・退職についての記録')});
   const make = (education, employment, long = false) => ({fields: {name: '多数経歴の検証', date: '2026-11-06'}, education: Array.from({length: education}, (_, i) => row('EDU', i, long)), employment: Array.from({length: employment}, (_, i) => row('JOB', i, long)), qualifications: [], sections: [], font: 'noto-sans-jp', theme: 'navy', background: 'paper'});
@@ -63,8 +63,32 @@ const path = require('node:path');
     const draft = make(count, 2);
     await load(draft); await inspect(`boundary-${count}`, draft);
   }
+  const spaced = make(2, 2);
+  const empty = {year: '', month: '', text: ''};
+  spaced.education.splice(1, 0, {...empty});
+  spaced.education.push({...empty}, {...empty});
+  spaced.employment.splice(1, 0, {...empty});
+  await load(spaced);
+  await inspect('manual-blank-rows', spaced);
+  const expectedRows = [
+    ['', '', '学歴'], ...spaced.education.map(row => [row.year, row.month, row.text]),
+    ['', '', '職歴'], ...spaced.employment.map(row => [row.year, row.month, row.text]), ['', '', '以上'],
+  ];
+  const renderedRows = await page.locator('.r-history tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent)));
+  assert.deepEqual(renderedRows.slice(0, expectedRows.length), expectedRows, 'Manual blank rows stay in place, including between education and employment');
+  await page.reload();
+  await page.waitForFunction(() => document.querySelectorAll('.r-sheet').length > 0 && !document.querySelector('#r-print').disabled);
+  const restoredRows = await page.locator('.r-history tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent)));
+  assert.deepEqual(restoredRows.slice(0, expectedRows.length), expectedRows, 'Blank rows survive draft restoration');
+  await page.emulateMedia({media: 'print'});
+  const printRows = await page.locator('.r-history tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent)));
+  assert.deepEqual(printRows.slice(0, expectedRows.length), expectedRows, 'The PDF print layout retains the same blank rows');
+  await page.pdf({path: path.join(out, 'manual-blank-rows.pdf'), format: 'A4', preferCSSPageSize: true, printBackground: true});
+  await page.locator('.r-sheet').first().screenshot({path: path.join(out, 'manual-blank-rows.png')});
+  await page.emulateMedia({media: null});
+  console.log('Manual blank rows retained in preview, restored draft and PDF print layout');
   await page.setViewportSize({width: 390, height: 844});
-  await inspect('mobile', make(35, 2));
+  await inspect('mobile', spaced);
   assert.deepEqual(errors, []);
   console.log('boundary issues', JSON.stringify(failures));
   await browser.close();
