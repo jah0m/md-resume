@@ -83,6 +83,10 @@ export const messages = {
     bottomMargin: "下",
     resetMargins: "初期値に戻す",
     showDate: "日付を表示",
+    nameAlign: "氏名の位置",
+    nameAlignRight: "右",
+    nameAlignLeft: "左",
+    nameAlignPhotoHint: "写真があるときは、氏名は左、写真は右に配置されます",
     savePdf: "PDFとして保存",
     aboutTitle: "このツールについて",
     aboutText:
@@ -196,6 +200,10 @@ export const messages = {
     bottomMargin: "Bottom",
     resetMargins: "Reset",
     showDate: "Show date",
+    nameAlign: "Name position",
+    nameAlignRight: "Right",
+    nameAlignLeft: "Left",
+    nameAlignPhotoHint: "With a photo, the name sits on the left and the photo on the right",
     savePdf: "Save as PDF",
     aboutTitle: "About this tool",
     aboutText:
@@ -309,6 +317,10 @@ export const messages = {
     bottomMargin: "下",
     resetMargins: "恢复默认",
     showDate: "显示日期",
+    nameAlign: "姓名位置",
+    nameAlignRight: "右",
+    nameAlignLeft: "左",
+    nameAlignPhotoHint: "有照片时，姓名固定在左侧，照片在右侧",
     savePdf: "导出 PDF",
     aboutTitle: "关于本工具",
     aboutText:

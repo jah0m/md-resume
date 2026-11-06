@@ -30,6 +30,14 @@ export function initCareerEditor() {
   const showDateInput = document.getElementById(
     "show-date",
   ) as HTMLInputElement;
+  const NAME_ALIGN_KEY = "md-resume-name-align";
+  // Checked means the name sits on the right.
+  const nameAlignSwitch = document.getElementById(
+    "name-align",
+  ) as HTMLInputElement;
+  const nameAlignLabel = document.getElementById(
+    "name-align-label",
+  ) as HTMLElement;
   const DEFAULT_PAGE_MARGIN = 15;
   const MIN_PAGE_MARGIN = 0;
   const MAX_PAGE_MARGIN = 24;
@@ -683,6 +691,9 @@ export function initCareerEditor() {
           : message("avatarSet");
     editAvatarButton.disabled = !avatar;
     clearAvatarButton.disabled = !avatar;
+    // The photo layout fixes the name on the left, so the choice only applies without one.
+    nameAlignSwitch.disabled = Boolean(avatar);
+    nameAlignLabel.title = avatar ? message("nameAlignPhotoHint") : "";
   }
 
   function persistAvatarSettings() {
@@ -953,12 +964,17 @@ export function initCareerEditor() {
     )
       return;
     const headingIdentity = isHeadingIdentity(metaParagraph);
-    if (headingIdentity)
+    const avatarToShow = displayedAvatar();
+    if (headingIdentity) {
       metaParagraph.classList.add("resume-heading-identity");
+      if (!avatarToShow)
+        (metaParagraph as HTMLElement).dataset.align = nameAlignSwitch.checked
+          ? "right"
+          : "left";
+    }
     const contactRow = headingIdentity
       ? decorateContactRow(metaParagraph)
       : null;
-    const avatarToShow = displayedAvatar();
     if (!avatarToShow && !contactRow) return;
 
     const coverHeader = document.createElement("div");
@@ -1434,11 +1450,20 @@ export function initCareerEditor() {
   applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
   applyPageMargins(pageMarginTop, pageMarginBottom, false, false);
   showDateInput.checked = localStorage.getItem(SHOW_DATE_KEY) !== "false";
+  nameAlignSwitch.checked = localStorage.getItem(NAME_ALIGN_KEY) !== "left";
   syncAvatarEditor();
   render();
 
   showDateInput.addEventListener("change", () => {
     localStorage.setItem(SHOW_DATE_KEY, String(showDateInput.checked));
+    render();
+  });
+
+  nameAlignSwitch.addEventListener("change", () => {
+    localStorage.setItem(
+      NAME_ALIGN_KEY,
+      nameAlignSwitch.checked ? "right" : "left",
+    );
     render();
   });
 

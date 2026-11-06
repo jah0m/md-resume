@@ -1562,6 +1562,24 @@
   text-align: left;
 }
 
+/* No photo: the name sits under the contact row (or the title) and follows the chosen side. */
+#resume-preview .resume-cover-header > p.resume-heading-identity[data-align] {
+  margin: 0;
+  color: var(--resume-title);
+  font-size: 13pt;
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: 0.045em;
+}
+
+#resume-preview p.resume-heading-identity[data-align='right'] {
+  text-align: right;
+}
+
+#resume-preview p.resume-heading-identity[data-align='left'] {
+  text-align: left;
+}
+
 #resume-preview p.resume-contact-row {
   margin: -4mm 0 5mm;
   color: var(--resume-muted);
@@ -2294,6 +2312,7 @@
 
 .pane-label-start {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.7rem;
 }
@@ -2311,6 +2330,83 @@
   margin: 0;
   accent-color: var(--ui-accent);
   cursor: pointer;
+}
+
+.name-align-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+/* Visually hidden, but still focusable and announced as a switch. */
+.name-align-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.name-align-track {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #bbcbd5;
+  border-radius: 999px;
+}
+
+.name-align-track::before {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  content: '';
+  background: var(--ui-accent);
+  border-radius: 999px;
+  transition: transform 0.16s ease;
+}
+
+.name-align-track > span {
+  position: relative;
+  min-width: 1.5em;
+  padding: 0 0.45em;
+  line-height: 1.5;
+  text-align: center;
+  transition: color 0.16s ease;
+}
+
+.name-align-switch input:not(:checked) + .name-align-track > span:first-child,
+.name-align-switch input:checked + .name-align-track > span:last-child {
+  color: #fff;
+}
+
+.name-align-switch input:checked + .name-align-track::before {
+  transform: translateX(100%);
+}
+
+.name-align-switch input:focus-visible + .name-align-track {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+.name-align-switch:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.name-align-switch input:disabled + .name-align-track {
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-align-track::before,
+  .name-align-track > span {
+    transition: none;
+  }
 }
 
 .preview-warning {
