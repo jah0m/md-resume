@@ -45,7 +45,7 @@
 .r-sheet-heading h2 { margin: 0; font-size: 23pt; font-weight: 700; }
 .r-sheet-heading > span { font-size: 9pt; }
 .r-sheet-footer { position: absolute; bottom: 7mm; left: 0; width: 100%; text-align: center; font-size: 8pt; color: #536170; }
-.r-identity { display: grid; grid-template-columns: minmax(0, 1fr) 34mm; gap: 5mm; margin-bottom: 6mm; }
+.r-identity { display: grid; grid-template-columns: minmax(0, 1fr) 34mm; gap: 5mm; }
 .r-personal { border: 1px solid var(--r-line); }
 .r-cell { padding: 2mm 3mm; overflow-wrap: anywhere; white-space: pre-wrap; }
 .r-cell-label { display: block; font-size: 8pt; color: #334556; }
@@ -60,7 +60,7 @@
 .r-id-photo { justify-self: end; width: 30mm; height: 40mm; margin-top: 2mm; overflow: hidden; display: grid; place-items: center; border: 1px dashed #a0aeb9; color: #536170; text-align: center; font-size: 8pt; white-space: pre-line; }
 .r-id-photo:has(img) { border: 0; }
 .r-id-photo img { width: 100%; height: 100%; object-fit: cover; }
-.r-address { grid-column: 1 / -1; margin-bottom: 6mm; border: 1px solid var(--r-line); }
+.r-address { grid-column: 1 / -1; margin-top: -1px; margin-bottom: 6mm; border: 1px solid var(--r-line); }
 .r-address > .r-cell:last-child { border-top: 1px solid var(--r-line); }
 .r-history { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0 0 6mm; }
 .r-history :is(th, td) { border: 1px solid var(--r-line); padding: 1.5mm 3mm; height: 9mm; font-weight: 400; overflow-wrap: anywhere; white-space: pre-wrap; }
@@ -72,7 +72,7 @@
 .r-text-box .r-cell-label { margin-bottom: 3mm; }
 .r-text-box { min-height: 30mm; }
 .r-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-@media screen and (max-width: 1400px) { .r-editor { height: 42rem; } .r-preview-scroll { max-height: 80vh; } }
+@media screen and (max-width: 1099px) { .r-editor { height: 42rem; } .r-preview-scroll { max-height: 80vh; } }
 @media screen and (max-width: 640px) { .r-editor { height: auto; } .r-editor #r-form { overflow: visible; flex: none; } .r-preview-scroll { max-height: none; margin-inline: 0; padding: .65rem; } .r-editor .avatar-control-actions { flex-shrink: 1; } }
 @media (max-width: 380px) { .r-entry { grid-template-columns: 3.3rem 2.6rem minmax(0, 1fr) 1.7rem; gap: .3rem; } .r-fields { grid-template-columns: minmax(0, 1fr); } }
 @media print {

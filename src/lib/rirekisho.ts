@@ -3,6 +3,7 @@ import { getInitialLocale, translate, type MessageKey, type Locale } from "./i18
 import { resolveResumeFont, resumeFontStack } from "./fonts";
 import { loadResumeFont } from "./font-loader";
 import { initIdPhotoEditor } from "./id-photo-editor";
+import { printDocument } from "./print-document";
 
 const themes = { navy: "#344f66", graphite: "#343b42", slate: "#345d6a", forest: "#2f5d50", burgundy: "#7a3f4a", amber: "#8a6545" };
 const backgrounds = { paper: "#ffffff", mist: "#f3f6f8", linen: "#faf7f0" };
@@ -366,7 +367,7 @@ export function initRirekishoEditor() {
     try { if (file.size > 4 * 1024 * 1024) throw new Error("Too large"); const next = validate(JSON.parse(await file.text())); if (confirm(t("replace"))) replace(next); }
     catch { status(t("invalid")); } finally { input.value = ""; }
   });
-  $("r-print").addEventListener("click", async () => { render(); await document.fonts.ready; if (root.hidden) return; render(); save(); window.print(); });
+  $("r-print").addEventListener("click", async () => { render(); await document.fonts.ready; if (root.hidden) return; render(); save(); const name = draft.fields.name?.trim(); printDocument(name ? `履歴書_${name}` : "履歴書"); });
   new ResizeObserver(resize).observe(pages);
   fill(false); setLocale(locale);
   void loadFont();

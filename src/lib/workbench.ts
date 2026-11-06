@@ -13,6 +13,12 @@ let locale: Locale = "ja";
 try { locale = getInitialLocale(); } catch { /* The editor also works without persisted language. */ }
 let active: Mode | null = null;
 let generation = 0;
+const app = document.getElementById("resume-studio")!;
+const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-view-option]"));
+const mobilePrintButton = document.getElementById("mobile-print") as HTMLButtonElement;
+const activePrintButton = () => document.getElementById(active === "personal" ? "r-print" : "save-pdf") as HTMLButtonElement | null;
+// The rirekisho print button is disabled while its font loads; mirror that state.
+const syncMobilePrintButton = () => { mobilePrintButton.disabled = activePrintButton()?.disabled ?? false; };
 
 function setLocale(next: Locale) {
   locale = next;
@@ -65,6 +71,7 @@ async function activate(mode: Mode, updateUrl = true) {
     }
     if (token !== generation) return;
     editors[mode]!.activate();
+    syncMobilePrintButton();
   } finally {
     panels[mode].removeAttribute("aria-busy");
   }
@@ -86,8 +93,15 @@ document.querySelectorAll<HTMLButtonElement>("[data-locale-option]").forEach(but
 document.addEventListener("keydown", event => {
   if (!active || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "p") return;
   event.preventDefault();
-  document.getElementById(active === "personal" ? "r-print" : "save-pdf")?.click();
+  activePrintButton()?.click();
 });
+viewButtons.forEach(button => button.addEventListener("click", () => {
+  app.dataset.view = button.dataset.viewOption;
+  viewButtons.forEach(option => option.setAttribute("aria-pressed", String(option === button)));
+  window.scrollTo({ top: 0 });
+}));
+mobilePrintButton.addEventListener("click", () => activePrintButton()?.click());
+new MutationObserver(syncMobilePrintButton).observe(document.getElementById("r-print")!, { attributes: true, attributeFilter: ["disabled"] });
 window.addEventListener("hashchange", () => { void activate(location.hash === "#rirekisho" ? "personal" : "career", false); });
 window.addEventListener("pagehide", () => { if (active) editors[active]?.deactivate(); });
 setLocale(locale);

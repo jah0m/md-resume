@@ -13,7 +13,7 @@ const description =
 ---
 
 <Layout title={title} description={description}>
-  <div class="app" id="resume-studio">
+  <div class="app" id="resume-studio" data-view="edit">
     <header class="app-header">
       <div class="header-row">
         <div class="app-title-wrap">
@@ -163,6 +163,15 @@ const description =
               <span data-i18n="previewLabel">プレビュー</span>
               <span id="page-count">A4 / Professional</span>
             </div>
+            <p
+              id="content-overflow-warning"
+              class="preview-warning"
+              role="status"
+              hidden
+              data-i18n="contentOverflow"
+            >
+              1ページに収まらない段落や項目があり、はみ出した部分はPDFに出力されません。分割してください。
+            </p>
           </div>
           <div class="preview-actions">
             <ThemeControls />
@@ -232,7 +241,7 @@ const description =
             「サンプルを読み込む」でMarkdownの書き方を確認するか、お手持ちの.mdファイルを開きます。
           </li>
           <li data-i18n="howToStep2">
-            左側のエディタで内容を編集すると、右側のプレビューにリアルタイムで反映されます。
+            Markdownを編集すると、プレビューに反映されます。
           </li>
           <li data-i18n="howToStep3">
             「PDFとして保存」を押すと印刷ダイアログが開きます。出力先を「PDFに保存」にして保存すれば完了です。
@@ -288,6 +297,18 @@ const description =
       </section>
     </div>
     <RirekishoEditor />
+    <div class="mobile-action-bar">
+      <div
+        class="mobile-view-switch"
+        role="group"
+        aria-label="表示の切り替え"
+        data-i18n-aria-label="viewSwitchLabel"
+      >
+        <button type="button" data-view-option="edit" aria-pressed="true" data-i18n="viewEdit">編集</button>
+        <button type="button" data-view-option="preview" aria-pressed="false" data-i18n="viewPreview">プレビュー</button>
+      </div>
+      <button id="mobile-print" type="button" data-i18n="savePdf">PDFとして保存</button>
+    </div>
   </div>
 
   <script type="text/plain" id="sample-resume-data" set:html={sampleResume} />

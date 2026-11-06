@@ -12,7 +12,7 @@ export const strings = {
     freeSections: "自由填写栏", sectionsHelp: "标题和内容都可以修改。不需要的栏目直接删除，需要时可以添加。", sectionTitle: "标题（也可留空）", sectionContent: "内容", addSection: "添加栏目", removeSection: "删除", moveUp: "上移", moveDown: "下移", sectionLimit: "最多可添加 20 个栏目。",
     title: "认真呈现，你的每一段经历。", lede: "制作日式履歴書，从填写到导出 PDF。", privacy: "数据仅在浏览器本地处理",
     career: "职务经历书", personal: "日式履歴書", editorLabel: "履歴書编辑器", editor: "逐项填写简历内容", sample: "加载示例", backup: "保存数据", open: "打开数据", clear: "清空",
-    hint: "填写各项信息，右侧实时预览。导出的文档使用日语标题。", basic: "基本信息", date: "填写日期", name: "姓名", kana: "姓名假名", birthday: "出生日期", gender: "性别（选填）", postal: "邮政编码", addressKana: "地址假名", address: "现住址", phone: "电话号码", email: "电子邮箱", contact: "其他联系地址（与现住址不同时）",
+    hint: "填写各项信息，预览会实时更新。导出的文档使用日语标题。", basic: "基本信息", date: "填写日期", name: "姓名", kana: "姓名假名", birthday: "出生日期", gender: "性别（选填）", postal: "邮政编码", addressKana: "地址假名", address: "现住址", phone: "电话号码", email: "电子邮箱", contact: "其他联系地址（与现住址不同时）",
     photo: "证件照（选填・高宽比 4:3）", removePhoto: "删除照片", photoPosition: "照片位置", photoZoom: "照片缩放", education: "教育经历", employment: "工作经历", qualifications: "执照与资格", add: "添加一行", remove: "删除此行", year: "年", month: "月", entry: "内容", motivation: "求职动机、自我介绍等", wishes: "本人希望栏", wishesHelp: "填写对薪资、岗位、工作时间、地点等的期望。",
     reference: "参照厚生劳动省样式示例制作的独立版式。", viewReference: "查看样式示例", preview: "实时预览", print: "导出 PDF", font: "字体", theme: "表格线条", navy: "藏蓝", black: "黑白", printHint: "在打印窗口选择“保存为 PDF”，纸张 A4，缩放 100%，关闭页眉和页脚。",
     saved: "已自动保存", saveError: "本地保存失败，请使用“保存数据”备份。", invalid: "无法打开，请选择本工具保存的 JSON 数据。", photoError: "无法读取照片，请选择 JPEG、PNG 或 WebP 图片。", replace: "要替换当前填写的内容吗？", count: "页", limit: "每个项目最多可添加 50 行。",
