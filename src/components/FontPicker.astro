@@ -1,0 +1,21 @@
+---
+import { resumeFonts } from "../lib/fonts";
+interface Props { id?: string; statusId?: string; }
+const { id = "resume-font", statusId = "font-status" } = Astro.props;
+---
+<div class="font-picker">
+  <label for={id} data-i18n="fontLabel">PDFフォント</label>
+  <select
+    id={id}
+    aria-describedby={statusId}
+  >
+    {
+      resumeFonts.map((font) => (
+        <option value={font.id} data-i18n={`font_${font.id}`}>
+          {font.family}
+        </option>
+      ))
+    }
+  </select>
+  <span id={statusId} role="status" aria-live="polite"></span>
+</div>

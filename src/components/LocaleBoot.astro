@@ -1,0 +1,49 @@
+---
+import { messages } from "../lib/i18n";
+import { strings } from "../lib/rirekisho-i18n";
+const personalMessages = strings;
+---
+<!-- Run during parsing, before deferred editor code, without hiding the page. -->
+<script is:inline define:vars={{ messages, personalMessages }}>
+  (() => {
+    const locale = document.documentElement.dataset.locale || "ja";
+    const shared = messages[locale] || messages.ja;
+    const personal = personalMessages?.[locale];
+    document.documentElement.lang = locale === "zh" ? "zh-CN" : locale;
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const value = shared[el.dataset.i18n];
+      if (value !== undefined) el.textContent = value;
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(el => {
+      const value = shared[el.dataset.i18nHtml];
+      if (value !== undefined) el.innerHTML = value;
+    });
+    for (const [attribute, dataKey] of [["aria-label", "i18nAriaLabel"], ["title", "i18nTitle"], ["alt", "i18nAlt"]]) {
+      document.querySelectorAll(`[data-${dataKey.replace(/[A-Z]/g, letter => "-" + letter.toLowerCase())}]`).forEach(el => {
+        const value = shared[el.dataset[dataKey]];
+        if (value !== undefined) el.setAttribute(attribute, value);
+      });
+    }
+    if (personal) document.querySelectorAll("[data-r]").forEach(el => {
+      const value = personal[el.dataset.r];
+      if (value !== undefined) el.textContent = value;
+    });
+    document.querySelectorAll("[data-locale-option], [data-language]").forEach(button => {
+      button.setAttribute("aria-pressed", String((button.dataset.localeOption || button.dataset.language) === locale));
+    });
+    document.title = shared.documentTitle;
+    const personalActive = location.hash === "#rirekisho";
+    const career = document.getElementById("career-workspace");
+    const resume = document.getElementById("personal-workspace");
+    if (career && resume) {
+      career.hidden = personalActive;
+      resume.hidden = !personalActive;
+      document.getElementById("resume-studio")?.classList.toggle("rirekisho-app", personalActive);
+      document.querySelectorAll("[data-document]").forEach(button => {
+        const selected = button.dataset.document === (personalActive ? "personal" : "career");
+        button.setAttribute("aria-selected", String(selected));
+        button.tabIndex = selected ? 0 : -1;
+      });
+    }
+  })();
+</script>

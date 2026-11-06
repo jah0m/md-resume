@@ -1,0 +1,171 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+
+(async () => {
+  const out = path.resolve('artifacts/rirekisho');
+  fs.mkdirSync(out, { recursive: true });
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'ja-JP', acceptDownloads: true });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('dialog', dialog => dialog.accept());
+  const appearance = async selectors => page.evaluate(selectors => {
+    const properties = ['height', 'fontSize', 'fontWeight', 'borderRadius', 'borderColor', 'backgroundColor', 'color', 'paddingTop', 'paddingRight', 'boxShadow'];
+    return Object.fromEntries(Object.entries(selectors).map(([name, selector]) => {
+      const styles = getComputedStyle(document.querySelector(selector));
+      return [name, Object.fromEntries(properties.map(property => [property, styles[property]]))];
+    }));
+  }, selectors);
+  await page.goto('http://127.0.0.1:4322/');
+  await page.waitForFunction(() => !document.documentElement.classList.contains('i18n-pending'));
+  await page.evaluate(() => document.fonts.ready);
+  const originalAppearance = await appearance({ sample: '#load-sample', print: '#save-pdf', font: '#resume-font', theme: '#career-workspace [data-theme-option="navy"]', background: '#career-workspace [data-background-option="paper"]' });
+  await page.screenshot({ path: path.join(out, 'original-desktop.png'), fullPage: true });
+  await page.goto('http://127.0.0.1:4322/#rirekisho');
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('.r-sheet').first().waitFor();
+  const newAppearance = await appearance({ sample: '#r-sample', print: '#r-print', font: '#r-font', theme: '#personal-workspace [data-theme-option="navy"]', background: '#personal-workspace [data-background-option="paper"]' });
+  assert.deepEqual(newAppearance, originalAppearance, 'Buttons, dropdowns and color controls use the same visual styles');
+  assert.equal(await page.locator('#personal-workspace [data-theme-option]').count(), 6);
+  assert.equal(await page.locator('#personal-workspace [data-background-option]').count(), 3);
+  assert.equal(await page.locator('#r-font option').count(), 7);
+  await page.locator('#personal-workspace [data-theme-option="forest"]').click();
+  await page.waitForFunction(() => document.querySelector('#r-pages').dataset.theme === 'forest');
+  await page.locator('#personal-workspace [data-background-option="linen"]').click();
+  await page.waitForFunction(() => document.querySelector('#r-pages').dataset.background === 'linen');
+  await page.locator('#r-sample').click();
+  await page.waitForFunction(() => document.querySelector('.r-name').textContent.includes('山田'));
+  await page.screenshot({ path: path.join(out, 'desktop.png'), fullPage: true });
+  const metrics = () => page.evaluate(() => ({
+    pages: [...document.querySelectorAll('.r-sheet')].map(sheet => ({
+      height: sheet.clientHeight, scroll: sheet.scrollHeight,
+      contentBottom: Math.max(...[...sheet.children].filter(el => el.tagName !== 'FOOTER').map(el => el.offsetTop + el.offsetHeight)),
+      footerTop: sheet.querySelector('footer').offsetTop,
+      contentLimit: sheet.clientHeight - parseFloat(getComputedStyle(sheet).paddingBottom),
+    })),
+    bodyWidth: document.body.scrollWidth, viewport: innerWidth,
+  }));
+  const checkLayout = async () => {
+    const result = await metrics();
+    assert.ok(result.bodyWidth <= result.viewport, 'No horizontal page overflow');
+    result.pages.forEach((sheet, index) => {
+      assert.ok(sheet.contentBottom <= sheet.contentLimit + 1, `Page ${index + 1} content stays inside its margins: ${JSON.stringify(sheet)}`);
+      assert.ok(sheet.contentBottom < sheet.footerTop, `Page ${index + 1} content does not overlap the footer`);
+    });
+    return result;
+  };
+  console.log('sample', JSON.stringify(await checkLayout()));
+  assert.equal(await page.locator('.r-sheet').count(), 2);
+  assert.deepEqual(await page.locator('.r-history-group td:last-child').allTextContents(), ['学歴', '職歴']);
+  assert.ok(await page.locator('.r-history-group td:last-child').evaluateAll(cells => cells.every(cell => getComputedStyle(cell).textAlign === 'center')));
+  await page.locator('[name="name"]').fill('検証 太郎');
+  await page.waitForFunction(() => document.querySelector('.r-name').textContent.includes('検証 太郎'));
+  await page.reload();
+  await page.locator('[name="name"]').waitFor();
+  assert.equal(await page.locator('[name="name"]').inputValue(), '検証 太郎');
+  const initialRows = await page.locator('#r-education .r-entry').count();
+  await page.locator('[data-add="education"]').click();
+  assert.equal(await page.locator('#r-education .r-entry').count(), initialRows + 1);
+  await page.locator('#r-education .r-entry:last-child .r-row-remove').click();
+  assert.equal(await page.locator('#r-education .r-entry').count(), initialRows);
+  await page.locator('[data-locale-option="zh"]').click();
+  assert.equal(await page.locator('#r-print').textContent(), '导出 PDF');
+  assert.equal(await page.locator('.r-sheet-heading h2').first().textContent(), '履 歴 書');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#r-save').click();
+  const download = await downloadPromise;
+  await download.saveAs(path.join(out, 'backup.json'));
+  const backup = JSON.parse(fs.readFileSync(path.join(out, 'backup.json'), 'utf8'));
+  assert.equal(backup.fields.name, '検証 太郎');
+  const firstSection = page.locator('#r-sections .r-section-editor').first();
+  await firstSection.locator('[data-section-title]').fill('研究テーマ');
+  await firstSection.locator('[data-section-content]').fill('新しい研究についての紹介です。');
+  assert.equal(await page.locator('.r-text-box .r-cell-label').first().textContent(), '研究テーマ');
+  await firstSection.scrollIntoViewIfNeeded();
+  await page.locator('.r-preview-scroll').evaluate(el => { el.scrollTop = el.scrollHeight; });
+  await page.screenshot({path: path.join(out, 'custom-sections-desktop.png'), fullPage: true});
+  await page.locator('#r-sections .r-section-editor').nth(1).locator('[data-section-action="removeSection"]').click();
+  assert.equal(await page.locator('.r-text-box').count(), 1, 'Deleted sections do not reserve a box');
+  await page.locator('#r-add-section').click();
+  await page.locator('#r-sections .r-section-editor').last().locator('[data-section-title]').fill('特記事項');
+  await page.locator('#r-sections .r-section-editor').last().locator('[data-section-content]').fill('自由な追加欄');
+  await page.locator('#r-sections .r-section-editor').last().locator('[data-section-action="moveUp"]').click();
+  assert.deepEqual(await page.locator('.r-text-box .r-cell-label').allTextContents(), ['特記事項', '研究テーマ']);
+  await page.reload();
+  await page.locator('#r-sections [data-section-title]').first().waitFor();
+  assert.equal(await page.locator('#r-sections [data-section-title]').first().inputValue(), '特記事項');
+  assert.equal(await page.locator('#r-sections input[type="checkbox"]').count(), 0);
+  await page.locator('#r-sections [data-section-title]').nth(1).fill('');
+  assert.equal(await page.locator('.r-text-box').nth(1).locator('.r-cell-label').count(), 0, 'A blank heading stays blank');
+  assert.equal(await page.locator('.r-text-box .r-cell-value').nth(1).textContent(), '新しい研究についての紹介です。');
+  await page.locator('#r-sections .r-section-editor').nth(0).locator('[data-section-action="removeSection"]').click();
+  assert.equal(await page.locator('#r-sections .r-section-editor').count(), 1);
+  const legacy = structuredClone(backup);
+  delete legacy.sections;
+  legacy.fields.motivation = '旧データの志望動機'; legacy.fields.wishes = '旧データの希望';
+  await page.evaluate(legacy => localStorage.setItem('rirekisho-draft-v1', JSON.stringify(legacy)), legacy);
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector('#r-sections [data-section-content]')?.value === '旧データの志望動機');
+  assert.equal(await page.locator('#r-sections [data-section-content]').nth(1).inputValue(), '旧データの希望');
+  const student = structuredClone(backup);
+  student.fields.name = '職歴なし'; student.employment = [{year: ' ', month: '', text: '  '}]; student.qualifications = [];
+  student.sections = [];
+  await page.locator('#r-open').setInputFiles({name: 'student.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(student))});
+  await page.waitForFunction(() => document.querySelector('[name="name"]').value === '職歴なし');
+  assert.deepEqual(await page.locator('.r-history-group td:last-child').allTextContents(), ['学歴']);
+  assert.equal(await page.locator('.r-history').textContent().then(text => text.includes('職歴')), false);
+  assert.equal(await page.locator('.r-text-box').count(), 0);
+  assert.equal(await page.locator('.r-sheet').count(), 1, 'No empty second page when optional sections are hidden');
+  await page.screenshot({path: path.join(out, 'student-no-optional.png'), fullPage: true});
+  await page.locator('[name="name"]').fill('Changed');
+  await page.locator('#r-open').setInputFiles(path.join(out, 'backup.json'));
+  await page.waitForFunction(() => document.querySelector('[name="name"]').value === '検証 太郎');
+  await page.locator('#r-open').setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from('{"fields":{}}') });
+  await page.waitForFunction(() => document.querySelector('#r-status').textContent.includes('无法打开'));
+  await page.locator('#r-photo').setInputFiles(path.resolve('src/assets/demo-avatar-512.webp'));
+  await page.locator('#r-avatar-editor[open]').waitFor();
+  await page.waitForFunction(() => !document.querySelector('#save-r-avatar-editor').disabled);
+  await page.locator('#save-r-avatar-editor').click();
+  await page.locator('.r-id-photo img').waitFor();
+  await page.locator('#r-font').selectOption('noto-serif-jp');
+  await page.waitForFunction(() => document.querySelector('#r-pages').dataset.font === 'noto-serif-jp' && !document.querySelector('#r-print').disabled);
+  await page.evaluate(() => document.fonts.ready);
+  await page.pdf({ path: path.join(out, 'sample.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
+  assert.equal((fs.readFileSync(path.join(out, 'sample.pdf')).toString('latin1').match(/\/Type\s*\/Page\b/g) || []).length, 2);
+  await page.emulateMedia({ media: 'screen' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: path.join(out, 'mobile.png'), fullPage: true });
+  console.log('mobile', JSON.stringify(await checkLayout()));
+  for (const width of [320, 768, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    await checkLayout();
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  const stress = structuredClone(backup);
+  stress.education = Array.from({ length: 30 }, (_, i) => ({ year: String(1990+i), month: '4', text: `学歴${i}: ` + '日本語の長い学校名と専攻についての説明。'.repeat(8) }));
+  stress.education[0].text = '行\n'.repeat(70);
+  stress.sections[0].content = ('あ\n').repeat(500);
+  stress.sections[0].title = '';
+  stress.sections[1].content = '希望条件の詳細です。'.repeat(90);
+  await page.locator('#r-open').setInputFiles({ name: 'stress.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(stress)) });
+  await page.waitForFunction(() => document.querySelectorAll('.r-sheet').length > 2);
+  console.log('stress pages', (await checkLayout()).pages.length);
+  const allMotivation = await page.locator('.r-text-box[data-section-id="motivation"] .r-cell-value').allTextContents();
+  assert.equal(allMotivation.join(''), stress.sections[0].content);
+  const expectedPageCount = await page.locator('.r-sheet').count();
+  await page.emulateMedia({ media: null });
+  await page.pdf({ path: path.join(out, 'stress-from-screen.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
+  assert.equal((fs.readFileSync(path.join(out, 'stress-from-screen.pdf')).toString('latin1').match(/\/Type\s*\/Page\b/g) || []).length, expectedPageCount, 'PDF page count matches preview');
+  await page.emulateMedia({ media: 'print' });
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
+  console.log('print stress pages', (await checkLayout()).pages.length);
+  await page.pdf({ path: path.join(out, 'stress.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
+  await checkLayout();
+  await page.screenshot({ path: path.join(out, 'stress.png'), fullPage: true });
+  assert.deepEqual(errors, []);
+  console.log('Runtime checks passed; browser errors:', errors.length);
+  await browser.close();
+})().catch(error => { console.error(error); process.exit(1); });

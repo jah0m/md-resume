@@ -1,4 +1,5 @@
 ---
+import LocaleBoot from "../components/LocaleBoot.astro";
 interface Props {
   title: string;
   description: string;
@@ -62,15 +63,8 @@ const jsonLd = {
               ? "en"
               : "ja";
         document.documentElement.dataset.locale = initialLocale;
-        document.documentElement.classList.add("i18n-pending");
-        document.documentElement.style.visibility = "hidden";
       })();
     </script>
-    <style is:inline>
-      html.i18n-pending {
-        visibility: hidden;
-      }
-    </style>
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -81,6 +75,7 @@ const jsonLd = {
   </head>
   <body>
     <slot />
+    <LocaleBoot />
   </body>
 </html>
 
@@ -100,7 +95,4 @@ const jsonLd = {
     color: #1f2937;
   }
 
-  html.i18n-pending .app {
-    visibility: hidden;
-  }
 </style>

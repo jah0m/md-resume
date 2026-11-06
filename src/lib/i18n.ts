@@ -4,6 +4,8 @@ export const LOCALE_KEY = "md-resume-locale";
 
 export const messages = {
   ja: {
+    careerDocument: "職務経歴書",
+    personalDocument: "履歴書",
     documentTitle: "Markdown職務経歴書 PDF変換ツール｜無料・ブラウザで完結",
     description:
       "日本の定番テンプレートでは物足りない人へ。Markdownで書いた職務経歴書を、デザイン性のあるA4レイアウトに整えてPDF保存できます。入力内容はブラウザ内だけで処理します。",
@@ -108,6 +110,8 @@ export const messages = {
     resumePhotoAlt: "プロフィール写真",
   },
   en: {
+    careerDocument: "Career resume",
+    personalDocument: "Japanese résumé",
     documentTitle: "Markdown Resume Studio | Create a polished PDF resume",
     description:
       "Write your resume in Markdown, format it as a polished A4 document, and save it as a PDF. Everything is processed locally in your browser.",
@@ -212,6 +216,8 @@ export const messages = {
     resumePhotoAlt: "Profile photo",
   },
   zh: {
+    careerDocument: "职务经历书",
+    personalDocument: "日式履歴書",
     documentTitle: "Markdown 履历书工具｜免费导出 PDF",
     description:
       "用 Markdown 写履历书，自动排版成简洁、有设计感的 A4 文档，并导出为 PDF。所有内容仅在浏览器中处理。",

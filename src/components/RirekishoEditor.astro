@@ -1,0 +1,64 @@
+---
+import "../styles/rirekisho.css";
+import ThemeControls from "./ThemeControls.astro";
+import FontPicker from "./FontPicker.astro";
+import PhotoEditorDialog from "./PhotoEditorDialog.astro";
+const fields = [
+  ["date", "作成日", "date"], ["name", "氏名", "text"],
+  ["kana", "ふりがな", "text"], ["birthday", "生年月日", "date"],
+  ["gender", "性別（任意）", "text"], ["postal", "郵便番号", "text"],
+  ["addressKana", "住所のふりがな", "text"], ["address", "現住所", "text"],
+  ["phone", "電話番号", "tel"], ["email", "メールアドレス", "email"],
+  ["contact", "連絡先（現住所と異なる場合）", "text"],
+] as const;
+---
+    <main id="personal-workspace" class="workspace r-workspace" role="tabpanel" aria-labelledby="personal-tab" hidden>
+      <section class="editor-pane r-editor" aria-labelledby="r-editor-title">
+        <div class="panel-heading"><div><div class="pane-label"><span data-r="editorLabel">履歴書エディター</span><span id="r-status" role="status" data-i18n="autosave">自動保存</span></div><h2 class="panel-title" id="r-editor-title" data-r="editor">項目ごとに内容を整える</h2></div><span class="panel-index">01</span></div>
+        <div class="editor-toolbar">
+          <div class="action-group">
+          <button type="button" id="r-sample" data-r="sample">サンプル</button>
+          <label class="r-file-button"><span data-r="open">データを開く</span><input id="r-open" type="file" accept=".json,application/json" /></label>
+          </div><div class="action-group action-group-secondary">
+          <button type="button" id="r-save" data-r="backup">データを保存</button>
+          <button type="button" id="r-clear" data-r="clear">クリア</button>
+          </div>
+        </div>
+        <p class="r-hint" data-r="hint">項目ごとに入力するとプレビューに反映されます。書類は日本語で出力されます。</p>
+        <form id="r-form">
+          <fieldset><legend data-r="basic">基本情報</legend>
+            <div class="r-fields">
+              {fields.map(([name, label, type]) => <label class:list={["r-field", { "r-wide": ["address", "addressKana", "contact"].includes(name) }]}>
+                <span data-r={name}>{label}</span><input name={name} type={type} maxlength="160" autocomplete={name === "name" ? "name" : name === "email" ? "email" : "off"} />
+              </label>)}
+            </div>
+            <div class="avatar-control">
+              <div class="avatar-control-copy"><span class="avatar-control-label" data-r="photo">証明写真（任意・縦4：横3）</span><span id="r-photo-status" data-i18n="avatarUnset">未設定</span></div>
+              <div class="avatar-control-actions"><label for="r-photo" data-i18n="uploadImage">画像をアップロード</label><input id="r-photo" type="file" accept="image/jpeg,image/png,image/webp" />
+              <button type="button" id="r-edit-photo" disabled data-i18n="editPhoto">編集</button>
+              <button type="button" id="r-remove-photo" data-r="removePhoto">写真を削除</button>
+              </div>
+            </div>
+          </fieldset>
+          {[['education', '学歴'], ['employment', '職歴'], ['qualifications', '免許・資格']].map(([id, title]) => <fieldset><legend data-r={id}>{title}</legend><div id={`r-${id}`} class="r-entry-list"></div><button type="button" class="studio-button r-add" data-add={id} data-r="add">行を追加</button></fieldset>)}
+          <fieldset><legend data-r="freeSections">自由記入欄</legend>
+            <p class="r-hint" data-r="sectionsHelp">見出しと内容は自由に変更できます。不要な欄は削除し、必要な欄を追加できます。</p>
+            <div id="r-sections"></div>
+            <button type="button" id="r-add-section" class="studio-button" data-r="addSection">記入欄を追加</button>
+          </fieldset>
+        </form>
+        <PhotoEditorDialog prefix="r-avatar" showShapeControls={false} />
+        <p class="r-hint"><span data-r="reference">厚生労働省の様式例を参考にした独自レイアウトです。</span> <a href="https://www.hellowork.mhlw.go.jp/doc/kouroushourirekisho.pdf" target="_blank" rel="noopener" data-r="viewReference">様式例を見る</a></p>
+      </section>
+      <section class="preview-pane r-preview" aria-labelledby="r-preview-title">
+        <div class="panel-heading"><div class="pane-label"><span id="r-preview-title" data-r="preview">プレビュー</span><span id="r-page-count"></span></div>
+          <div class="preview-actions">
+            <ThemeControls />
+            <FontPicker id="r-font" statusId="r-font-status" />
+            <button id="r-print" class="primary" type="button" data-r="print">PDFとして保存</button>
+          </div>
+        </div>
+        <div class="preview-scroll r-preview-scroll"><div id="r-pages" aria-label="履歴書プレビュー" lang="ja"></div></div>
+        <p class="r-hint r-print-hint" data-r="printHint">印刷画面で「PDFに保存」を選択。用紙はA4、倍率100%、ヘッダーとフッターはオフにしてください。</p>
+      </section>
+    </main>

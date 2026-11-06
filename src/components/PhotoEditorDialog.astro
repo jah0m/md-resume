@@ -1,0 +1,110 @@
+---
+interface Props { prefix?: string; showShapeControls?: boolean; }
+const { prefix = "avatar", showShapeControls = true } = Astro.props;
+---
+<dialog
+  id={`${prefix}-editor`}
+  class="avatar-editor" data-photo-kind={showShapeControls ? "profile" : "id"}
+  aria-labelledby={`${prefix}-editor-title`}
+>
+  <div class="avatar-editor-heading">
+    <div>
+      <span class="avatar-editor-kicker" data-i18n="photoKicker"
+        >PROFILE PHOTO</span
+      >
+      <h3 id={`${prefix}-editor-title`} data-i18n="editPhotoTitle">
+        写真を整える
+      </h3>
+    </div>
+    <button
+      id={`close-${prefix}-editor`}
+      class="avatar-editor-close"
+      type="button"
+      aria-label="写真編集を閉じる"
+      data-i18n="close"
+      data-i18n-aria-label="closePhotoEditor">閉じる</button
+    >
+  </div>
+  <div class="avatar-editor-body">
+    <div
+      class="avatar-editor-stage"
+      id={`${prefix}-editor-stage`}
+      tabindex="0"
+      role="application"
+      aria-label="写真をドラッグして位置を調整。ホイールで拡大縮小"
+      data-i18n-aria-label="adjustPhoto"
+    >
+      <img
+        id={`${prefix}-editor-source-image`}
+        class="avatar-editor-source-image"
+        alt=""
+        aria-hidden="true"
+      />
+      <div
+        class="avatar-crop-frame avatar-editor-crop-window"
+        id={`${prefix}-editor-crop-window`}
+        data-shape={showShapeControls ? "circle" : "rectangle"}
+      >
+        <img
+          id={`${prefix}-editor-image`}
+          alt="プロフィール写真の編集プレビュー"
+          data-i18n-alt="photoPreviewAlt"
+        />
+      </div>
+    </div>
+    <div class="avatar-editor-settings">
+      <label class="avatar-zoom-control" for={`${prefix}-zoom`}>
+        <span
+          ><span data-i18n="zoom">拡大率</span>
+          <output id={`${prefix}-zoom-value`} for={`${prefix}-zoom`}>100%</output
+          ></span
+        >
+        <input
+          id={`${prefix}-zoom`}
+          type="range"
+          min="100"
+          max="240"
+          step="1"
+          value="100"
+        />
+      </label>
+      {showShapeControls && <fieldset class="avatar-shape-control">
+        <legend data-i18n="displayShape">表示形状</legend>
+        <div class="avatar-shape-options">
+          <label>
+            <input type="radio" name={`${prefix}-shape`} value="rectangle" />
+            <span data-i18n="rectangle">長方形</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name={`${prefix}-shape`}
+              value="circle"
+              checked
+            />
+            <span data-i18n="circle">円形</span>
+          </label>
+        </div>
+      </fieldset>}
+      <p class="avatar-editor-note">
+        <span data-i18n="photoEditorNote"
+          >ドラッグで位置調整、スクロールで拡大縮小。変更内容は「保存」でプレビューに反映されます。</span
+        >
+      </p>
+    </div>
+  </div>
+  <div class="avatar-editor-actions">
+    <button
+      id={`cancel-${prefix}-editor`}
+      class="avatar-editor-secondary"
+      type="button"
+      data-i18n="cancel">キャンセル</button
+    >
+    <button
+      id={`save-${prefix}-editor`}
+      class="avatar-editor-primary"
+      type="button"
+      data-i18n="save">保存</button
+    >
+  </div>
+</dialog>

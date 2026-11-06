@@ -12,6 +12,31 @@
   --resume-line: #bcc8d1;
 }
 
+.document-switcher {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.75rem clamp(0.75rem, 1.4vw, 1.5rem) 0;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+.document-switcher button {
+  padding: 0.6rem 1rem;
+  border-radius: 7px;
+  color: var(--ui-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+.document-switcher button:hover { color: var(--ui-accent); background: #fff; }
+.document-switcher button[aria-selected='true'] { color: #fff; background: var(--ui-accent); }
+.document-switcher button:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 3px; }
+[hidden] { display: none !important; }
+@media print { .document-switcher { display: none; } }
+
 .app {
   min-height: 100vh;
   background:
@@ -201,6 +226,7 @@
 
 .editor-toolbar button,
 .editor-toolbar label,
+.studio-button,
 .preview-actions > button,
 .preview-actions label {
   color: #344250;
@@ -217,6 +243,7 @@
 
 .editor-toolbar button:hover,
 .editor-toolbar label:hover,
+.studio-button:hover,
 .preview-actions > button:hover,
 .preview-actions label:hover {
   border-color: #9cabb8;
@@ -226,6 +253,7 @@
 
 .editor-toolbar button:focus-visible,
 .editor-toolbar label:focus-visible,
+.studio-button:focus-visible,
 .preview-actions > button:focus-visible,
 .preview-actions label:focus-visible {
   outline: 3px solid rgba(53, 112, 160, 0.2);
@@ -1109,7 +1137,8 @@
 }
 
 .editor-toolbar button,
-.editor-toolbar label {
+.editor-toolbar label,
+.studio-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2336,6 +2365,9 @@
   .preview-scroll {
     max-height: none;
     min-height: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 
   #resume-pages {
