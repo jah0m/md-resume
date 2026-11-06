@@ -160,7 +160,13 @@ const description =
         <div class="panel-heading">
           <div>
             <div class="pane-label">
-              <span data-i18n="previewLabel">プレビュー</span>
+              <div class="pane-label-start">
+                <span data-i18n="previewLabel">プレビュー</span>
+                <label class="date-toggle" for="show-date">
+                  <input id="show-date" type="checkbox" checked />
+                  <span data-i18n="showDate">日付を表示</span>
+                </label>
+              </div>
               <span id="page-count">A4 / Professional</span>
             </div>
             <p

@@ -16,6 +16,7 @@ type Draft = {
   education: Entry[]; employment: Entry[]; qualifications: Entry[];
   sections: FreeSection[];
   photo: string; position: number; zoom: number; photoX: number; photoY: number; font: string; theme: keyof typeof themes; background: keyof typeof backgrounds;
+  showDate: boolean;
 };
 export function initRirekishoEditor() {
   const root = document.getElementById("personal-workspace")!;
@@ -34,7 +35,7 @@ export function initRirekishoEditor() {
     { id: "motivation", title: "志望動機・自己PR", content: "" },
     { id: "wishes", title: "本人希望欄", content: "" },
   ];
-  const blank = (): Draft => ({ fields: { date: today() }, education: [{ year: "", month: "", text: "" }], employment: [{ year: "", month: "", text: "" }], qualifications: [{ year: "", month: "", text: "" }], sections: defaultSections(), photo: "", position: 50, zoom: 100, photoX: 0, photoY: 0, font: "noto-sans-jp", theme: "navy", background: "paper" });
+  const blank = (): Draft => ({ fields: { date: today() }, education: [{ year: "", month: "", text: "" }], employment: [{ year: "", month: "", text: "" }], qualifications: [{ year: "", month: "", text: "" }], sections: defaultSections(), photo: "", position: 50, zoom: 100, photoX: 0, photoY: 0, font: "noto-sans-jp", theme: "navy", background: "paper", showDate: true });
   function validate(value: unknown): Draft {
     if (!value || typeof value !== "object") throw new Error("Invalid draft");
     const v = value as Draft;
@@ -74,6 +75,7 @@ export function initRirekishoEditor() {
     result.font = resolveResumeFont(v.font === "serif" ? "noto-serif-jp" : v.font).id;
     result.theme = (v.theme as string) === "black" ? "graphite" : Object.hasOwn(themes, v.theme) ? v.theme : "navy";
     result.background = Object.hasOwn(backgrounds, v.background) ? v.background : "paper";
+    result.showDate = v.showDate !== false;
     return result;
   }
   let draft = blank();
@@ -136,6 +138,7 @@ export function initRirekishoEditor() {
     for (const group of groups) renderRows(group);
     renderSections();
     $<HTMLSelectElement>("r-font").value = draft.font;
+    $<HTMLInputElement>("r-show-date").checked = draft.showDate;
     $<HTMLInputElement>("r-photo").value = "";
     if (renderPreview) render();
   }
@@ -191,7 +194,7 @@ export function initRirekishoEditor() {
       page = node("article", "r-sheet");
       if (count === 0) {
         const heading = node("header", "r-sheet-heading");
-        heading.append(node("h2", "", "履 歴 書"), node("span", "", jpDate(draft.fields.date) ? `${jpDate(draft.fields.date)} 現在` : ""));
+        heading.append(node("h2", "", "履 歴 書"), node("span", "", draft.showDate && jpDate(draft.fields.date) ? `${jpDate(draft.fields.date)} 現在` : ""));
         page.append(heading);
       }
       const frame = node("div", "r-sheet-frame"); frame.append(page);
@@ -294,6 +297,7 @@ export function initRirekishoEditor() {
   function update() { render(); save(); }
   form.addEventListener("submit", event => event.preventDefault());
   form.addEventListener("input", event => { const input = event.target as HTMLInputElement; if (input.name) { draft.fields[input.name] = input.value; update(); } });
+  $<HTMLInputElement>("r-show-date").addEventListener("change", event => { draft.showDate = (event.target as HTMLInputElement).checked; update(); });
   $("r-add-section").addEventListener("click", () => {
     if (draft.sections.length >= 20) { status(t("sectionLimit")); return; }
     draft.sections.push({ id: crypto.randomUUID(), title: "自己PR", content: "" });

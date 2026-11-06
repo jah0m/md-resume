@@ -2292,6 +2292,27 @@
   }
 }
 
+.pane-label-start {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.date-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.date-toggle input {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin: 0;
+  accent-color: var(--ui-accent);
+  cursor: pointer;
+}
+
 .preview-warning {
   margin: 0;
   padding: 0.5rem 0.7rem;
