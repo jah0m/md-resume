@@ -82,6 +82,7 @@ export const messages = {
     topMargin: "上",
     bottomMargin: "下",
     resetMargins: "初期値に戻す",
+    showDate: "日付を表示",
     savePdf: "PDFとして保存",
     aboutTitle: "このツールについて",
     aboutText:
@@ -194,6 +195,7 @@ export const messages = {
     topMargin: "Top",
     bottomMargin: "Bottom",
     resetMargins: "Reset",
+    showDate: "Show date",
     savePdf: "Save as PDF",
     aboutTitle: "About this tool",
     aboutText:
@@ -306,6 +308,7 @@ export const messages = {
     topMargin: "上",
     bottomMargin: "下",
     resetMargins: "恢复默认",
+    showDate: "显示日期",
     savePdf: "导出 PDF",
     aboutTitle: "关于本工具",
     aboutText:

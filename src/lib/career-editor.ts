@@ -26,6 +26,10 @@ export function initCareerEditor() {
   const THEME_KEY = "md-resume-theme";
   const BACKGROUND_KEY = "md-resume-background";
   const PAGE_MARGINS_KEY = "md-resume-page-margins";
+  const SHOW_DATE_KEY = "md-resume-show-date";
+  const showDateInput = document.getElementById(
+    "show-date",
+  ) as HTMLInputElement;
   const DEFAULT_PAGE_MARGIN = 15;
   const MIN_PAGE_MARGIN = 0;
   const MAX_PAGE_MARGIN = 24;
@@ -1243,7 +1247,7 @@ export function initCareerEditor() {
     const firstPage = pages.querySelector(
       ".resume-page-frame > .resume-page",
     ) as HTMLElement | null;
-    if (firstPage) {
+    if (firstPage && showDateInput.checked) {
       const date = formatCurrentDate();
       const dateElement = document.createElement("time");
       dateElement.className = "resume-date";
@@ -1429,8 +1433,14 @@ export function initCareerEditor() {
   applyFont(localStorage.getItem(FONT_KEY) ?? "noto-sans-jp");
   applyBackground(localStorage.getItem(BACKGROUND_KEY) ?? "paper");
   applyPageMargins(pageMarginTop, pageMarginBottom, false, false);
+  showDateInput.checked = localStorage.getItem(SHOW_DATE_KEY) !== "false";
   syncAvatarEditor();
   render();
+
+  showDateInput.addEventListener("change", () => {
+    localStorage.setItem(SHOW_DATE_KEY, String(showDateInput.checked));
+    render();
+  });
 
 
   fontSelect.addEventListener("change", () => {
