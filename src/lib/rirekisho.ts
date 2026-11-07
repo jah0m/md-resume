@@ -284,7 +284,7 @@ export function initRirekishoEditor() {
     history(hasEmployment ? "学歴・職歴（各別にまとめて書く）" : "学歴", historyRows, 10);
     const qualifications = draft.qualifications.some(row => row.text.trim() || row.year.trim() || row.month.trim()) ? draft.qualifications : [];
     const visibleSections = draft.sections;
-    if (qualifications.length || visibleSections.length) newPage();
+    if (count === 1 && (qualifications.length || visibleSections.length)) newPage();
     if (qualifications.length) history("免許・資格", qualifications, 6);
     for (const section of visibleSections) {
       const block = cell(section.title.trim(), section.content, "r-text-box");
@@ -297,6 +297,11 @@ export function initRirekishoEditor() {
   function update() { render(); save(); }
   form.addEventListener("submit", event => event.preventDefault());
   form.addEventListener("input", event => { const input = event.target as HTMLInputElement; if (input.name) { draft.fields[input.name] = input.value; update(); } });
+  // Native date pickers open on the input's value, so an empty birthday borrows this date while open. It never reaches the draft unless the user picks a different date.
+  const birthdayInput = form.elements.namedItem("birthday") as HTMLInputElement;
+  const birthdayPickerStart = "2000-01-01";
+  birthdayInput.addEventListener("click", () => { if (!birthdayInput.value) birthdayInput.value = birthdayPickerStart; });
+  birthdayInput.addEventListener("blur", () => { if (!draft.fields.birthday && birthdayInput.value === birthdayPickerStart) birthdayInput.value = ""; });
   $<HTMLInputElement>("r-show-date").addEventListener("change", event => { draft.showDate = (event.target as HTMLInputElement).checked; update(); });
   $("r-add-section").addEventListener("click", () => {
     if (draft.sections.length >= 20) { status(t("sectionLimit")); return; }
