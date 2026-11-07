@@ -10,5 +10,7 @@ export function printDocument(title: string) {
     { once: true },
   );
   document.title = title;
+  // Anonymous click count: the request carries no resume content.
+  navigator.sendBeacon("/api/export");
   window.print();
 }

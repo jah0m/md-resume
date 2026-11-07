@@ -90,7 +90,7 @@ export const messages = {
     savePdf: "PDFとして保存",
     aboutTitle: "このツールについて",
     aboutText:
-      "Markdownで職務経歴書を作成し、内容をブラウザ内だけでA4 PDFに変換できます。",
+      "Markdownで職務経歴書を作成し、内容をブラウザ内だけでA4 PDFに変換できます。「PDFとして保存」ボタンのクリック数のみ匿名で集計し、入力内容は送信しません。",
     howToTitle: "使い方",
     howToStep1:
       "サンプルを読むか、.mdファイルを開きます。",
@@ -207,7 +207,7 @@ export const messages = {
     savePdf: "Save as PDF",
     aboutTitle: "About this tool",
     aboutText:
-      "Create a resume in Markdown and turn it into an A4 PDF entirely in your browser.",
+      "Create a resume in Markdown and turn it into an A4 PDF entirely in your browser. We only count clicks on the Save as PDF button anonymously; your content is never sent.",
     howToTitle: "How to use",
     howToStep1:
       "Load the sample or open your own .md file.",
@@ -324,7 +324,7 @@ export const messages = {
     savePdf: "导出 PDF",
     aboutTitle: "关于本工具",
     aboutText:
-      "用 Markdown 制作履历书，并在浏览器内直接转换为 A4 PDF。",
+      "用 Markdown 制作履历书，并在浏览器内直接转换为 A4 PDF。仅匿名统计“导出 PDF”按钮的点击次数，不会发送你填写的内容。",
     howToTitle: "使用方法",
     howToStep1: "加载示例，或打开自己的 .md 文件。",
     howToStep2: "编辑 Markdown，预览会同步更新。",
