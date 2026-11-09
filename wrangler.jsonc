@@ -23,8 +23,22 @@
   },
   "assets": {
     "directory": "./dist",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/mcp"]
   },
+  // MCP generate_resume_pdf: a headless browser prints the site, the PDF is
+  // kept in R2 for a 1-hour download link (bucket lifecycle deletes leftovers
+  // after 1 day), and each client IP may create 5 PDFs per minute.
+  "browser": { "binding": "BROWSER" },
+  "r2_buckets": [{ "binding": "PDFS", "bucket_name": "md-resume-pdfs" }],
+  "ratelimits": [
+    {
+      "name": "PDF_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 }
+    }
+  ],
+  // The MCP server returns the sample resume as text.
+  "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": true }],
   "d1_databases": [
     {
       "binding": "DB",

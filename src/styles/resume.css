@@ -1971,6 +1971,47 @@
   filter: brightness(1.08);
 }
 
+.usage-mcp {
+  padding: 0.75rem 0.85rem 0.8rem;
+}
+
+.usage-mcp .usage-ai-prompt-heading {
+  margin-bottom: 0.45rem;
+}
+
+.usage-mcp-help {
+  display: block;
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.usage-mcp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.usage-mcp-row code {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.38rem 0.4rem;
+  color: #3f4b56;
+  font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  /* Wrap rather than hide part of the URL on narrow screens. */
+  overflow-wrap: anywhere;
+  user-select: all;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(190, 205, 213, 0.9);
+  border-radius: 6px;
+}
+
+.usage-ai-prompt .usage-mcp-row button {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
 .site-footer {
   flex: 0 0 auto;
   margin: 0;
@@ -2012,7 +2053,10 @@
     grid-row: auto;
     max-width: none;
     margin: 0;
-    padding: 1.25rem 0.2rem 2rem;
+    padding: 1.25rem 0.2rem 0;
+    /* Scroll instead of spilling past the bottom on shorter screens. */
+    overflow-y: auto;
+    scrollbar-width: thin;
     color: #3f4b56;
     font-size: 0.84rem;
     line-height: 1.8;
@@ -2056,11 +2100,10 @@
     color: #3f4b56;
   }
 
+  /* Pinned to the bottom when there is room, after the content otherwise. */
   .usage-section > .site-footer {
-    position: absolute;
-    right: 0.2rem;
-    bottom: 0;
-    margin: 0;
+    margin: auto 0 0;
+    padding-top: 0.75rem;
   }
 }
 
