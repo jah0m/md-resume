@@ -107,6 +107,9 @@ export const messages = {
       "このサンプルの見出しと構成に合わせて、私の職務経歴書をMarkdownとして整理してください。内容は変更せず、情報が足りない部分は「〇〇」などのプレースホルダーにしてください。",
     copyPrompt: "Promptをコピー",
     promptCopied: "コピーしました",
+    mcpHelp:
+      "AIツールにMCPサーバーとして追加すると、職務経歴書・履歴書の作成からPDF出力までAIに任せられます（原稿はサーバーへ送信されます）。",
+    copyMcpUrl: "コピー",
     syntaxTitle: "対応記法",
     syntaxText:
       "見出し、箇条書き、表、太字に対応しています。",
@@ -224,6 +227,9 @@ export const messages = {
       "Using the headings and structure of this sample, organize my resume as Markdown. Do not change the content; use placeholders such as \"〇〇\" where information is missing.",
     copyPrompt: "Copy prompt",
     promptCopied: "Copied",
+    mcpHelp:
+      "Add this as an MCP server in your AI tool to let it fill in your career history and rirekisho and export the PDFs for you (your data is sent to the server).",
+    copyMcpUrl: "Copy",
     syntaxTitle: "Supported syntax",
     syntaxText:
       "Supports headings, lists, tables, and bold text.",
@@ -338,6 +344,9 @@ export const messages = {
       "请按照这个示例的标题和结构，将我的履历书整理为 Markdown。不要修改内容；信息不足的地方请使用“〇〇”等占位符。",
     copyPrompt: "复制 Prompt",
     promptCopied: "已复制",
+    mcpHelp:
+      "在 AI 工具中添加为 MCP 服务器，即可让 AI 完成职务经历书和履历书从填写到导出 PDF 的全过程（履历内容会发送到服务器）。",
+    copyMcpUrl: "复制",
     syntaxTitle: "支持的 Markdown 语法",
     syntaxText: "支持标题、列表、表格和粗体。",
     spacerTitle: "调整间距",

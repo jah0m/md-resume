@@ -31,6 +31,39 @@ Phone: 090-0000-0000 · Email: your.email@example.com · [LinkedIn](https://www.
 
 外部AIサービスに個人情報を含む原稿を送信する場合は、利用するサービスの設定と取り扱いを確認してください。
 
+## MCPサーバー
+
+Claude、Claude Code、CursorなどのMCP対応AIツールから、職務経歴書（Markdown）と履歴書（JSONデータ）を作成・チェックし、PDFまで出力できます。エンドポイントは `https://md-resume.jahom.dev/mcp`（Streamable HTTP、認証なし）です。
+
+| ツール | 内容 |
+| --- | --- |
+| `get_resume_format_guide` | タイトル、氏名、連絡先、見出し階層などのMarkdown構成ルール |
+| `get_sample_resume` | サンプルの職務経歴書Markdown |
+| `validate_resume_markdown` | レイアウト上の問題を行番号付きで指摘（タイトル・氏名の形式、見出しの飛び、HTML、画像、長すぎる段落、残っている〇〇など） |
+| `generate_resume_pdf` | サイトの「PDFとして保存」と同じレイアウトでA4のPDFを作成し、1時間有効のダウンロードリンクを返す。配色・フォント・背景・日付表示・氏名の位置を指定可能。写真は入りません |
+| `get_rirekisho_format_guide` | 履歴書データ（「データを保存」で保存されるJSONと同じ形式）の項目、制限、学歴・職歴の書き方の慣習、記入例 |
+| `validate_rirekisho_data` | 履歴書データの問題を指摘し、整えたJSONを返す。そのJSONは履歴書タブの「データを開く」で読み込めます |
+| `generate_rirekisho_pdf` | 履歴書データからサイトと同じレイアウトのA4のPDFを作成し、1時間有効のダウンロードリンクを返す。証明写真は入りません |
+
+接続方法の例:
+
+- Claude（Web・デスクトップ）: 設定の「コネクタ」でカスタムコネクタを追加し、URLに上記エンドポイントを入力します。
+- Claude Code: `claude mcp add --transport http md-resume https://md-resume.jahom.dev/mcp`
+- Cursorなど: MCP設定に `{ "mcpServers": { "md-resume": { "url": "https://md-resume.jahom.dev/mcp" } } }` を追加します。
+
+AIに「私の職務経歴書をこのアプリの形式に整えて、PDFにして」「この内容で履歴書を作って」と依頼すると、ガイドとサンプルを参照して原稿を作成し、チェックしたうえでPDFのリンクを返します。
+
+検証とPDF生成のツールは原稿をサーバーへ送信します（下記「プライバシー」参照）。
+
+PDF生成はCloudflare Browser RenderingとR2を使います。初回デプロイ前に、PDF用のバケットと1日で削除するライフサイクルルールを作成してください。
+
+```bash
+npx wrangler r2 bucket create md-resume-pdfs
+npx wrangler r2 bucket lifecycle add md-resume-pdfs expire-pdfs pdf/ --expire-days 1
+```
+
+同じIPアドレスからのPDF生成は1分あたり5回までです。
+
 ## 対応している記法
 
 - 見出し（`#`、`##`、`###` など）
@@ -50,6 +83,8 @@ Markdownの入力内容とアップロードしたプロフィール写真はブ
 「PDFとして保存」ボタンのクリック数のみ匿名で集計しています。送信されるのはクリックされたという事実だけで、入力内容は含まれません。
 
 重要な原稿は、必要に応じて「.md保存」から手元にも保存してください。
+
+MCPサーバーを使う場合だけは、原稿がサーバーへ送られます。検証ツール（`validate_resume_markdown`、`validate_rirekisho_data`）はメモリ上でチェックするだけで保存しません。PDF生成ツール（`generate_resume_pdf`、`generate_rirekisho_pdf`）は原稿をサーバー上のブラウザで描画し、作成したPDFをダウンロードリンクの有効期限（1時間）まで保存します。期限を過ぎたリンクは使えなくなり、PDFは遅くとも1日以内に削除されます。原稿の本文はログに記録しません。
 
 ## 日本式の履歴書を作成する
 

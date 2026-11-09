@@ -1552,38 +1552,49 @@ export function initCareerEditor() {
   document.getElementById("save-pdf")?.addEventListener("click", savePdf);
 
 
-  copyAiPromptButton.addEventListener("click", async () => {
-    const prompt = message("aiPrompt");
-    let copied = false;
-
+  async function copyText(text: string) {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(prompt);
-        copied = true;
+        await navigator.clipboard.writeText(text);
+        return true;
       }
     } catch {
-      copied = false;
+      // Fall through to the textarea fallback.
     }
+    const fallback = document.createElement("textarea");
+    fallback.value = text;
+    fallback.setAttribute("readonly", "");
+    fallback.style.position = "fixed";
+    fallback.style.opacity = "0";
+    document.body.appendChild(fallback);
+    fallback.select();
+    const copied = document.execCommand("copy");
+    fallback.remove();
+    return copied;
+  }
 
-    if (!copied) {
-      const fallback = document.createElement("textarea");
-      fallback.value = prompt;
-      fallback.setAttribute("readonly", "");
-      fallback.style.position = "fixed";
-      fallback.style.opacity = "0";
-      document.body.appendChild(fallback);
-      fallback.select();
-      copied = document.execCommand("copy");
-      fallback.remove();
-    }
-
-    if (copied) {
-      copyAiPromptButton.textContent = message("promptCopied");
+  function bindCopyButton(
+    button: HTMLElement,
+    text: () => string,
+    labelKey: string,
+  ) {
+    button.addEventListener("click", async () => {
+      if (!(await copyText(text()))) return;
+      button.textContent = message("promptCopied");
       window.setTimeout(() => {
-        copyAiPromptButton.textContent = message("copyPrompt");
+        button.textContent = message(labelKey);
       }, 1800);
-    }
-  });
+    });
+  }
+
+  bindCopyButton(copyAiPromptButton, () => message("aiPrompt"), "copyPrompt");
+  const copyMcpUrlButton = document.getElementById("copy-mcp-url");
+  if (copyMcpUrlButton)
+    bindCopyButton(
+      copyMcpUrlButton,
+      () => document.getElementById("mcp-url")?.textContent?.trim() ?? "",
+      "copyMcpUrl",
+    );
 
   document.getElementById("save-md")?.addEventListener("click", () => {
     const blob = new Blob([textarea.value], {
